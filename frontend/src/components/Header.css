@@ -1,0 +1,53 @@
+.navbar-brand {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-brand .chuwa {
+    font-size: smaller;
+    margin-left: 5px;
+  }
+  
+  @media (max-width: 992px) {
+    .navbar .navbar-collapse {
+      justify-content: center;
+    }
+    .navbar .navbar-brand {
+      margin-bottom: 15px;
+    }
+    .navbar .form-control {
+      width: 100%;
+    }
+    .navbar .form-inline {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .cart-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .btn .badge{
+    top:-5px;
+  }
+  
+  .badge-custom {
+    position: absolute;
+    right: 5px;
+    
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  
