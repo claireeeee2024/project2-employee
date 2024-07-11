@@ -25,7 +25,7 @@ app.use(
 );
 
 //add routers here
-// app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes);
 
 const __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
