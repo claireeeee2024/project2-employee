@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema(
       default: "employee",
     },
     personalInfo: {
-      firstName: { type: String, required: true },
-      lastName: { type: String, required: true },
+      firstName: { type: String },
+      lastName: { type: String },
       middleName: String,
       preferredName: String,
       profilePicture: String,
@@ -116,9 +116,9 @@ const userSchema = new mongoose.Schema(
         },
       },
     },
-    registrationToken: {
-      token: String,
-      expiresAt: Date,
+    registrationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Registration",
     },
   },
   {

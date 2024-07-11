@@ -15,3 +15,12 @@ export const validatePassword = (password) => {
   }
   return null;
 };
+
+export const validateUsername = (username) => {
+  if (!username) {
+    return "Username is required";
+  } else if (username.length < 5) {
+    return "Username must be at least 5 characters";
+  }
+  return null;
+};
