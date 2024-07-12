@@ -20,8 +20,8 @@ const registrationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Submitted"],
-      default: "Pending",
+      enum: ["Not Submitted", "Submitted"],
+      default: "Not Submitted",
     },
   },
   {

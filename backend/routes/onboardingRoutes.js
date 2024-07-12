@@ -1,21 +1,14 @@
 import express from "express";
 import {
-  listPendingApplications,
-  approveApplication,
-  rejectApplication,
-  listApprovedApplications,
-  listRejectedApplications,
+  listApplications,
   getApplicationById,
+  updateApplicationStatusById,
 } from "../controllers/onboardingController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
-
 const router = express.Router();
 
-router.get("/pending", protect, admin, listPendingApplications);
-router.put("/pending/:id/approve", protect, admin, approveApplication);
-router.put("/pending/:id/reject", protect, admin, rejectApplication);
-router.get("/approved", protect, admin, listApprovedApplications);
-router.get("/rejected", protect, admin, listRejectedApplications);
+router.get("/", protect, admin, listApplications);
 router.get("/:id", protect, admin, getApplicationById);
+router.put("/:id", protect, admin, updateApplicationStatusById);
 
 export default router;

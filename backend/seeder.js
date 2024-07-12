@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import colors from "colors";
 import users from "./data/users.js";
+import registrations from "./data/registrations.js";
 import Registration from "./models/registrationModel.js";
 import User from "./models/userModel.js";
-
+import crypto from "crypto";
 import { connectDB } from "./config/db.js";
 dotenv.config();
 
@@ -16,7 +17,8 @@ const importData = async () => {
     await Registration.deleteMany();
 
     await User.insertMany(users);
-    
+    await Registration.insertMany(registrations);
+
     console.log("Data Imported!".green.inverse);
     process.exit();
   } catch (error) {

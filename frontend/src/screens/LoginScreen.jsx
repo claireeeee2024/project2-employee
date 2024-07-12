@@ -14,6 +14,27 @@ const LoginScreen = () => {
   const [login] = useLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (userInfo) {
+      if (userInfo.role === "hr") {
+        navigate("/onboarding-management"); // Redirect to hiring management page for HR
+      } else if (userInfo.role === "employee") {
+        if (
+          userInfo.onboardingStatus === "Not Submitted" ||
+          userInfo.onboardingStatus === "Pending" ||
+          userInfo.onboardingStatus === "Rejected"
+        ) {
+          navigate("/onboarding");
+        } else {
+          navigate("/personalinfo");
+        }
+      } else {
+        navigate("/");
+      }
+    }
+  }, [navigate, userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -26,15 +47,6 @@ const LoginScreen = () => {
     try {
       const res = await login({ username, password }).unwrap();
       dispatch(setCredentials({ ...res }));
-      if (
-        res.onboarding === "Not Submitted" ||
-        res.onboarding === "Pending" ||
-        res.onboarding === "Rejected"
-      ) {
-        navigate("/onboarding");
-      } else {
-        navigate("/personalinfo");
-      }
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }

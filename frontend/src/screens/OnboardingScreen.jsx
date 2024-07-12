@@ -164,7 +164,7 @@ const OnboardingScreen = () => {
   useEffect(() => {
     if (data) {
       const onboardingStatus = data.onboardingStatus;
-      dispatch(setCredentials({ ...userInfo, onboarding: onboardingStatus }));
+      dispatch(setCredentials({ ...userInfo, onboardingStatus: onboardingStatus }));
       setFormData({
         firstName: data.personalInfo.firstName,
         lastName: data.personalInfo.lastName,

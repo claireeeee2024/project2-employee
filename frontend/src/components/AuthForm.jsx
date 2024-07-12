@@ -108,6 +108,14 @@ const AuthForm = ({
                     setErrors={setErrors}
                   />
                 )}
+                {mode === "register" && (
+                  <EmailField
+                    email={email}
+                    setEmail={setEmail}
+                    errors={errors}
+                    setErrors={setErrors}
+                  />
+                )}
 
                 {(mode === "login" || mode === "register") && (
                   <PasswordField
