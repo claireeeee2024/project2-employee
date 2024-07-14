@@ -10,11 +10,13 @@ import PendingField from "../components/PendingField";
 import NotSubmittedField from "../components/NotSubmittedField";
 import { useUploadProfileMutation } from "../slices/usersApiSlice";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const OnboardingScreen = () => {
   const [postOnboarding] = usePostOnboardingMutation();
   const { userInfo } = useSelector((state) => state.auth);
+  const { id } = useParams(); 
+  
   const navigate = useNavigate();
   useEffect(() => {
     if (!userInfo) {

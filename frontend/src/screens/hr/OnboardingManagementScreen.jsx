@@ -40,7 +40,6 @@ const OnboardingManagementScreen = () => {
 
   const handleViewApplication = (application) => {
     console.log(application);
-
     navigate(`/test/${application._id}`);
   };
 

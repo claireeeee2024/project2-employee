@@ -14,7 +14,7 @@ const users = [
   },
   {
     username: "john_doe",
-    password: "password123",
+    password: bcrypt.hashSync("123456", 10),
     email: "john.doe@example.com",
     role: "employee",
     personalInfo: {
@@ -67,7 +67,7 @@ const users = [
   },
   {
     username: "jane_smith",
-    password: "password456",
+    password: bcrypt.hashSync("123456", 10),
     email: "jane.smith@example.com",
     role: "employee",
     personalInfo: {
@@ -120,7 +120,7 @@ const users = [
   },
   {
     username: "alice_johnson",
-    password: "alicePassword789",
+    password: bcrypt.hashSync("123456", 10),
     email: "alice.johnson@example.com",
     role: "employee",
     personalInfo: {
@@ -173,7 +173,7 @@ const users = [
   },
   {
     username: "bob_williams",
-    password: "bobSecurePass123",
+    password: bcrypt.hashSync("123456", 10),
     email: "bob.williams@example.com",
     role: "employee",
     personalInfo: {
@@ -226,7 +226,7 @@ const users = [
   },
   {
     username: "carol_lee",
-    password: "carolStrongPass456",
+    password: bcrypt.hashSync("123456", 10),
     email: "carol.lee@example.com",
     role: "employee",
     personalInfo: {
@@ -281,7 +281,7 @@ const users = [
   },
   {
     username: "david_brown",
-    password: "davidPassword321",
+    password: bcrypt.hashSync("123456", 10),
     email: "david.brown@example.com",
     role: "employee",
     personalInfo: {
@@ -334,7 +334,7 @@ const users = [
   },
   {
     username: "eva_martin",
-    password: "evaSecurePass789",
+    password: bcrypt.hashSync("123456", 10),
     email: "eva.martin@example.com",
     role: "employee",
     personalInfo: {
