@@ -19,6 +19,10 @@ import RegistrationManagementScreen from "./screens/hr/RegistrationManagementScr
 import Test from "./screens/Test";
 import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
+import ProfileScreen from "./screens/hr/ProfileScreen";
+import VisaMangamentScreen from "./screens/hr/VisaMangamentScreen";
+import { Profile } from "./components/Profile";
+import { EmployeeVisaManagement } from "./screens/EmployeeVisaScreen";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,7 +33,20 @@ const router = createBrowserRouter(
       <Route path="/onboarding" element={<OnboardingScreen />} />
       <Route path="/personalinfo" element={<PersonalInfoScreen />} />
       <Route path="/test/:id" element={<Test />} />
+      <Route path="/employeeVisaManagement" element={<EmployeeVisaManagement />} />
       <Route path="" element={<HrRoute />}>
+        <Route
+          path="/profiles/:employeeId"
+          element={<Profile />}
+        ></Route>
+        <Route
+          path="/profiles"
+          element={<ProfileScreen />}
+        ></Route>
+        <Route
+          path="/visa-management"
+          element={<VisaMangamentScreen />}
+        ></Route>
         <Route
           path="/onboarding-management"
           element={<OnboardingManagementScreen />}

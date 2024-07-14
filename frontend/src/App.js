@@ -9,20 +9,34 @@ import { useSelector } from "react-redux";
 
 const App = () => {
   const { userInfo } = useSelector((state) => state.auth);
-  const navStructure = [
-    { label: "Home", link: "/", icon: "bi-house" },
-    { label: "Employee Profiles", link: "/", icon: "bi-speedometer2" },
-    { label: "Visa Status Management", link: "/", icon: "bi-table" },
-    {
-      label: "Hiring Management",
-      link: "/registration-management",
-      icon: "bi-ui-checks-grid",
-      subItems: [
-        { label: "Registration History", link: "/registration-management" },
-        { label: "Onboarding Applications", link: "/onboarding-management" },
-      ],
-    },
-  ];
+  const getNavStructure = (userRole) => {
+
+    const navStructure = [
+      { label: "Home", link: "/", icon: "bi-house" },
+      { label: "My Visa Status", link: "/employeeVisaManagement", icon: "bi-speedometer2" },
+      { label: "Personal Info", link: "/personalinfo", icon: "bi-person" },
+      { label: "Onboarding", link: "/onboarding", icon: "bi-person" },
+    ];
+
+    if (userRole === "hr") {
+      navStructure.push( 
+        { label: "Employee Profiles", link: "/profiles", icon: "bi-people" },
+        { label: "Visa Status Management", link: "/visa-management", icon: "bi-table" },
+        {
+          label: "Hiring Management",
+          link: "/registration-management",
+          icon: "bi-ui-checks-grid",
+          subItems: [
+            { label: "Registration History", link: "/registration-management" },
+            { label: "Onboarding Applications", link: "/onboarding-management" },
+          ],
+        },);
+      
+    }
+    return navStructure;
+  }
+
+  const navStructure = getNavStructure(userInfo?.role);
   return (
     <div
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}

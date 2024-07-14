@@ -45,6 +45,21 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getVisaStatusById: builder.query({
+      query: (id) => ({
+        url: `${USERS_URL}/visa-status/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+    updateVisaStatus: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/visa-status/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    })
   }),
 });
 
@@ -55,4 +70,6 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useUpdatePasswordMutation,
+  useGetVisaStatusByIdQuery,
+  useUpdateVisaStatusMutation,
 } = userApiSlice;
