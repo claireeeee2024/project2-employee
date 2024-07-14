@@ -13,8 +13,18 @@ const App = () => {
   if (userInfo && userInfo.role === "hr") {
     navStructure = [
       { label: "Home", link: "/", icon: "bi-house" },
-      { label: "Employee Profiles", link: "/", icon: "bi-speedometer2" },
-      { label: "Visa Status Management", link: "/", icon: "bi-table" },
+
+      { label: "Employee Profiles", link: "/profiles", icon: "bi-people" },
+      {
+        label: "Visa Status Management",
+        link: "/visa-management",
+        icon: "bi-table",
+      },
+      {
+        label: "My Visa Status",
+        link: "/employeeVisaManagement",
+        icon: "bi-speedometer2",
+      },
       {
         label: "Hiring Management",
         link: "/registration-management",
@@ -29,17 +39,23 @@ const App = () => {
   } else if (userInfo && userInfo.role === "employee") {
     navStructure = [
       { label: "Home", link: "/", icon: "bi-house" },
+
       {
         label: "Personal Information",
         link: "/personalinfo",
         icon: "bi-speedometer2",
       },
-      { label: "Visa Status Management", link: "/", icon: "bi-table" },
+      {
+        label: "My Visa Status",
+        link: "/employeeVisaManagement",
+        icon: "bi-speedometer2",
+      },
       { label: "Logout", link: "/", icon: "bi-box-arrow-right" },
     ];
   } else {
     navStructure = [];
   }
+
   return (
     <div
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}

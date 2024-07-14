@@ -7,7 +7,8 @@ import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import onboardingRoutes from "./routes/onboardingRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
-import uploadRoutes from "./routes/uploadRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";import hrRoutes from "./routes/hrRoutes.js";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
@@ -28,6 +29,7 @@ app.use(
 app.use("/api/users", userRoutes);
 app.use("/api/onboarding", onboardingRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/hr", hrRoutes);
 
 const __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {

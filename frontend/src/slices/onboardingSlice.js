@@ -15,7 +15,5 @@ const onboardingSlice = createSlice({
   },
 });
 
-export const {
-  setSortOption,
-} = onboardingSlice.actions;
+export const { setSortOption } = onboardingSlice.actions;
 export default onboardingSlice.reducer;

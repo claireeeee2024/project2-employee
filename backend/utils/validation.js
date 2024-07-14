@@ -27,6 +27,8 @@ export const validatePassword = (password) => {
  */
 export const validateDocumentSequence = (user, documentType) => {
   // Validate the document type
+
+  const documentSequence = ['OPT Receipt', 'OPT EAD', 'I-983', 'I-20'];
   if (!documentSequence.includes(documentType)) {
     return { isValid: false, message: "Invalid document type" };
   }
@@ -34,7 +36,7 @@ export const validateDocumentSequence = (user, documentType) => {
   // Validate document sequence
   const currentIndex = documentSequence.indexOf(documentType);
   if (currentIndex > 0) {
-    const previousDocumentType = documentSequence[currentIndex - 1];
+    const previousDocumentType = mapDocumentType(documentSequence[currentIndex - 1]);
     const previousDocument = user.visaStatus.documents[previousDocumentType];
 
     if (!previousDocument || previousDocument.status !== "Approved") {
@@ -46,14 +48,9 @@ export const validateDocumentSequence = (user, documentType) => {
   }
 
   // Check if the current document has already been approved
-  if (
-    user.visaStatus.documents[documentType] &&
-    user.visaStatus.documents[documentType].status === "Approved"
-  ) {
-    return {
-      isValid: false,
-      message: "This document has already been approved and cannot be changed",
-    };
+  const document = mapDocumentType(documentType);
+  if (user.visaStatus.documents[document] && user.visaStatus.documents[document].status === 'Approved') {
+    return { isValid: false, message: "This document has already been approved and cannot be changed" };
   }
 
   return { isValid: true, message: "Document sequence is valid" };
@@ -66,4 +63,14 @@ export const validateUsername = (username) => {
     return "Username must be at least 2 characters";
   }
   return null;
+};
+
+export const mapDocumentType = (frontendDocType) => {
+  const mapping = {
+    'OPT Receipt': 'optReceipt',
+    'OPT EAD': 'optEAD',
+    'I-983': 'i983',
+    'I-20': 'i20'
+  };
+  return mapping[frontendDocType] || frontendDocType;
 };
