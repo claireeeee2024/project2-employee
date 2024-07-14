@@ -5,6 +5,7 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
+import onboardingRoutes from "./routes/onboardingRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
@@ -13,7 +14,6 @@ const PORT = process.env.PORT || 8080;
 connectDB();
 
 const app = express();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -25,7 +25,8 @@ app.use(
 );
 
 //add routers here
-// app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/onboarding", onboardingRoutes);
 
 const __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {

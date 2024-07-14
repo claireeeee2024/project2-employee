@@ -27,11 +27,11 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 const admin = (req, res, next) => {
-  if (req.user && req.user.isVendor) {
+  if (req.user && req.user.role === "hr") {
     next();
   } else {
     res.status(401);
-    throw new Error('Not authorized as an admin');
+    throw new Error("Not authorized as HR user.");
   }
 };
 
