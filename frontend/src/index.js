@@ -19,6 +19,7 @@ import RegistrationManagementScreen from "./screens/hr/RegistrationManagementScr
 import Test from "./screens/Test";
 import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
+import ErrorScreen from "./screens/ErrorScreen";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,6 +40,7 @@ const router = createBrowserRouter(
           element={<RegistrationManagementScreen />}
         ></Route>
       </Route>
+      <Route path="*" element={<ErrorScreen />} />
     </Route>
   )
 );

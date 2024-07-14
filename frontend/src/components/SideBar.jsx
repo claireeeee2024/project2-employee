@@ -1,12 +1,23 @@
 import { Nav } from "react-bootstrap";
-
+import { useDispatch } from "react-redux";
+import { logout } from "../slices/authSlice";
 const Sidebar = ({ navStructure }) => {
+  const dispatch = useDispatch();
+  const handleClick = (label) => {
+    if (label === "Logout") {
+      dispatch(logout());
+    }
+  };
   return (
     <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 ">
       <Nav className="flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start p-2 fw-medium">
         {navStructure.map((item, index) => (
           <Nav.Item key={index} className="nav-item">
-            <Nav.Link href={item.link} className="align-middle px-0 text-dark">
+            <Nav.Link
+              href={item.link}
+              onClick={() => handleClick(item.label)}
+              className="align-middle px-0 text-dark"
+            >
               <i className={`fs-4 ${item.icon} me-2`}></i>
               <span className="ms-1 d-none d-sm-inline">{item.label}</span>
             </Nav.Link>

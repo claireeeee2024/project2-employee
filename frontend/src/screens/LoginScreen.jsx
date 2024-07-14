@@ -14,7 +14,7 @@ const LoginScreen = () => {
   const [login] = useLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth) || null;
 
   useEffect(() => {
     if (userInfo) {
@@ -28,7 +28,7 @@ const LoginScreen = () => {
         ) {
           navigate("/onboarding");
         } else {
-          navigate("/personalinfo");
+          navigate("/");
         }
       } else {
         navigate("/");

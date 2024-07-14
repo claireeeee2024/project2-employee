@@ -16,9 +16,9 @@ import {
   getRegistrationHistory,
   getOnboarding,
   postOnboarding,
+  updateInfo,
 } from "../controllers/userController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
-
 
 const router = express.Router();
 
@@ -102,7 +102,6 @@ router.get("/visa-status/in-progress", protect, admin, getVisaStatusInProgress);
 // @access Private/Admin
 router.get("/search", protect, admin, searchEmployee);
 
-
 router.post("/send-token", protect, admin, sendRegistrationToken);
 router.post("/verify-token", verifyRegistrationToken);
 router.post("/register", registerUser);
@@ -112,5 +111,6 @@ router.get("/registration-history", protect, admin, getRegistrationHistory);
 router.post("/login", authUser);
 router.post("/onboarding", postOnboarding);
 router.get("/onboarding", getOnboarding);
+router.put("/info", updateInfo);
 
 export default router;

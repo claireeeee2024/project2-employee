@@ -25,26 +25,40 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["User"],
     }),
-    register: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/register`,
+    uploadProfile: builder.mutation({
+      query: (image) => ({
+        url: `${USERS_URL}/upload`,
         method: "POST",
+        body: image,
+      }),
+    }),
+    updateInfo: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/info`,
+        method: "PUT",
         body: data,
       }),
     }),
-    logout: builder.mutation({
-      query: () => ({
-        url: `${USERS_URL}/logout`,
-        method: "POST",
-      }),
-    }),
-    updatePassword: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/forgot-password`,
-        method: "POST",
-        body: data,
-      }),
-    }),
+    // register: builder.mutation({
+    //   query: (data) => ({
+    //     url: `${USERS_URL}/register`,
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    // }),
+    // logout: builder.mutation({
+    //   query: () => ({
+    //     url: `${USERS_URL}/logout`,
+    //     method: "POST",
+    //   }),
+    // }),
+    // updatePassword: builder.mutation({
+    //   query: (data) => ({
+    //     url: `${USERS_URL}/forgot-password`,
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    // }),
   }),
 });
 
@@ -52,6 +66,8 @@ export const {
   useLoginMutation,
   usePostOnboardingMutation,
   useGetOnboardingQuery,
+  useUploadProfileMutation,
+  useUpdateInfoMutation,
   useLogoutMutation,
   useRegisterMutation,
   useUpdatePasswordMutation,

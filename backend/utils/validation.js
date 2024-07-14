@@ -37,14 +37,23 @@ export const validateDocumentSequence = (user, documentType) => {
     const previousDocumentType = documentSequence[currentIndex - 1];
     const previousDocument = user.visaStatus.documents[previousDocumentType];
 
-    if (!previousDocument || previousDocument.status !== 'Approved') {
-      return { isValid: false, message: "Previous document must be approved before uploading" };
+    if (!previousDocument || previousDocument.status !== "Approved") {
+      return {
+        isValid: false,
+        message: "Previous document must be approved before uploading",
+      };
     }
   }
 
   // Check if the current document has already been approved
-  if (user.visaStatus.documents[documentType] && user.visaStatus.documents[documentType].status === 'Approved') {
-    return { isValid: false, message: "This document has already been approved and cannot be changed" };
+  if (
+    user.visaStatus.documents[documentType] &&
+    user.visaStatus.documents[documentType].status === "Approved"
+  ) {
+    return {
+      isValid: false,
+      message: "This document has already been approved and cannot be changed",
+    };
   }
 
   return { isValid: true, message: "Document sequence is valid" };
@@ -53,8 +62,8 @@ export const validateDocumentSequence = (user, documentType) => {
 export const validateUsername = (username) => {
   if (!username) {
     return "Username is required";
-  } else if (username.length < 5) {
-    return "Username must be at least 5 characters";
+  } else if (username.length < 2) {
+    return "Username must be at least 2 characters";
   }
   return null;
 };

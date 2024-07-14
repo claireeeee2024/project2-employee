@@ -314,6 +314,66 @@ export const postOnboarding = asyncHandler(async (req, res) => {
 });
 
 // @desc    Onboarding
+// @route   PUT /api/users/info
+// @access  Public
+export const updateInfo = asyncHandler(async (req, res) => {
+  const { username, formData } = req.body;
+
+  const user = await User.findOneAndUpdate(
+    { username },
+    {
+      $set: {
+        "personalInfo.firstName": formData.firstName,
+        "personalInfo.lastName": formData.lastName,
+        "personalInfo.middleName": formData.middleName,
+        "personalInfo.preferredName": formData.preferredName,
+        "personalInfo.profilePicture": formData.profilePicture,
+        "personalInfo.ssn": formData.ssn,
+        "personalInfo.dateOfBirth": formData.dateOfBirth,
+        "personalInfo.gender": formData.gender,
+        "address.building": formData.address.building,
+        "address.street": formData.address.street,
+        "address.city": formData.address.city,
+        "address.state": formData.address.state,
+        "address.zip": formData.address.zip,
+        "contactInfo.cellPhone": formData.cellPhone,
+        "contactInfo.workPhone": formData.workPhone,
+        "citizenshipStatus.isPermanentResident": formData.permanentResident,
+        "citizenshipStatus.citizenshipType": formData.citizenshipType,
+        "citizenshipStatus.workAuthorizationType": formData.workAuthorization,
+        "citizenshipStatus.visaTitle": formData.visaTitle,
+        "citizenshipStatus.startDate": formData.startDate,
+        "citizenshipStatus.endDate": formData.endDate,
+        "reference.firstName": formData.reference.firstName,
+        "reference.lastName": formData.reference.lastName,
+        "reference.middleName": formData.reference.middleName,
+        "reference.phone": formData.reference.phone,
+        "reference.email": formData.reference.email,
+        "reference.relationship": formData.reference.relationship,
+        emergencyContacts: formData.emergencyContacts,
+        "documents.profilePicture": formData.documents.profilePicture,
+        "documents.driversLicense": formData.documents.driversLicense,
+        "documents.workAuthorization": formData.documents.workAuthorization,
+        "visaStatus.documents.optReceipt.file": formData.optReceipt,
+        // 更新其它visaStatus文档
+      },
+    },
+    { new: true } // 返回更新后的文档
+  );
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  res.status(200).json({
+    _id: user._id,
+    username: user.username,
+    onboarding: user.onboardingStatus,
+  });
+});
+
+// @desc    Onboarding
 // @route   GET /api/users/onboarding
 // @access  Public
 export const getOnboarding = asyncHandler(async (req, res) => {
