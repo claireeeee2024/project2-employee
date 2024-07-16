@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useGetOnboardingApplicationsQuery } from "../../slices/hrApiSlice";
-import "./index.css";
+
 import { setSortOption } from "../../slices/onboardingSlice";
 import {
   Row,
