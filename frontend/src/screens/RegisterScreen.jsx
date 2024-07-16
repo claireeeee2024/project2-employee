@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import AuthForm from "../components/AuthForm";
+import { Col, Row } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../slices/usersApiSlice";
@@ -7,17 +8,12 @@ import { setCredentials } from "../slices/authSlice";
 import { validateForm } from "../utils/validation";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
-
+import { useVerifyTokenMutation } from "../slices/usersApiSlice";
 const RegisterScreen = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get("token");
-
-  useEffect(() => {
-    if (token) {
-      console.log("Token:", token);
-    }
-  }, [token, location.search]);
+  // console.log(token);
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -28,6 +24,22 @@ const RegisterScreen = () => {
   const navigate = useNavigate();
 
   const [register, { isLoading }] = useRegisterMutation();
+
+  const [verifyToken, { isLoading: tokenLoading, error: tokenError }] =
+    useVerifyTokenMutation();
+  useEffect(() => {
+    async function verify(token) {
+      try {
+        await verifyToken({ token }).unwrap();
+      } catch (error) {
+        navigate("/invalid-token");
+      }
+    }
+
+    if (token) {
+      verify(token);
+    }
+  }, [token, verifyToken]);
 
   useEffect(() => {
     if (userInfo) {
@@ -55,8 +67,21 @@ const RegisterScreen = () => {
       toast.error(error.data?.message || "Registration failed");
     }
   };
+  if (tokenError) {
+    return <div>Token verification failed</div>;
+  }
 
-  return isLoading ? (
+  return tokenLoading ? (
+    <Row className="justify-content-center">
+      <Col className="my-4 mx-4 text-center">
+        <i
+          className="bi bi-key-fill"
+          style={{ fontSize: "100px" }}
+        ></i>
+        <h4>Verifying your token . . . </h4>
+      </Col>
+    </Row>
+  ) : isLoading ? (
     <Loader />
   ) : (
     <AuthForm

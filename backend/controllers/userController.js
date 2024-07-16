@@ -1,26 +1,23 @@
 import User from "../models/userModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import generateToken from "../utils/generateToken.js";
-import { validateDocumentSequence, mapDocumentType } from "../utils/validation.js";
+import {
+  validateDocumentSequence,
+  mapDocumentType,
+} from "../utils/validation.js";
 import Registration from "../models/registrationModel.js";
-import crypto from "crypto";
 import {
   validatePassword,
   validateEmail,
   validateUsername,
 } from "../utils/validation.js";
-import nodemailer from "nodemailer";
-
-const generateRegistrationToken = () => {
-  return crypto.randomBytes(32).toString("hex");
-};
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Private/Admin
 export const authUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
-  console.log(username, password);
+  // console.log(username, password);
   // 1. Username & password validation
   const usernameError = validateUsername(username);
   if (usernameError) {
@@ -35,7 +32,6 @@ export const authUser = asyncHandler(async (req, res) => {
   }
   // 2. Auth user & generate token
   const user = await User.findOne({ username });
-  console.log(user);
   if (user && (await user.matchPassword(password))) {
     generateToken(res, user._id);
     res.json({
@@ -51,86 +47,12 @@ export const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Send registration token to HR user
-// @route   POST /api/users/send-token
-// @access  Private/Admin
-export const sendRegistrationToken = asyncHandler(async (req, res) => {
-  const { name, email } = req.body;
-  console.log(name, email);
-  // 1: Check if user exists in the user table
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    return res.status(400).json({ error: "Email is already registered." });
-  }
-
-  const usernameError = validateUsername(name);
-  if (usernameError) {
-    res.status(400);
-    console.log("usernameError");
-    throw new Error(usernameError);
-  }
-
-  const emailError = validateEmail(email);
-  if (emailError) {
-    res.status(400);
-    throw new Error(emailError);
-  }
-  // 2: Create or update registration record in the register table
-  let registration = await Registration.findOne({ email });
-
-  if (registration) {
-    // Update existing registration with new name, registrationToken and expiresAt
-    registration.name = name;
-    registration.registrationToken = generateRegistrationToken();
-    registration.expiresAt = new Date(Date.now() + 3 * 60 * 60 * 1000);
-  } else {
-    // Create new registration record
-    registration = await Registration.create({
-      name,
-      email,
-      registrationToken: generateRegistrationToken(),
-      expiresAt: new Date(Date.now() + 3 * 60 * 60 * 1000),
-    });
-  }
-
-  // 3. Save registration record
-  await registration.save();
-
-  // 4. Send email with registration link
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    port: 465,
-    secure: true,
-  });
-
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Registration Token",
-    html: `<p>Dear ${name},</p><p>Please use the following token to register: <strong>${`http://localhost:3000/register?token=${registration.registrationToken}`}</strong></p>`,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-      res.status(500).json({ error: "Failed to send email." });
-    } else {
-      console.log("Email sent: " + info.response);
-      res.status(200).json({ message: "Token sent successfully." });
-    }
-  });
-});
-
 // @desc    Verify registration token
 // @route   POST /api/users/verify-token
 // @access  Public
 export const verifyRegistrationToken = asyncHandler(async (req, res) => {
   const { token } = req.body;
-
+  // console.log("token", token);
   // Find the registration record with the token
   const registration = await Registration.findOne({
     registrationToken: token,
@@ -139,7 +61,7 @@ export const verifyRegistrationToken = asyncHandler(async (req, res) => {
 
   if (!registration) {
     res.status(400);
-    throw new Error("Invalid or expired token.");
+    throw new Error("Sorry, the token is not valid.");
   }
 
   res
@@ -152,7 +74,7 @@ export const verifyRegistrationToken = asyncHandler(async (req, res) => {
 // @access  Public
 export const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password, token } = req.body;
-  console.log(username, email, password, token);
+  // console.log(username, email, password, token);
   // 1. Email, password and username validation
   const emailError = validateEmail(email);
   if (emailError) {
@@ -232,15 +154,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
   res.status(200).send({ message: "Logged out successfully" });
 });
 
-// @desc    Get registration history
-// @route   GET /api/users/registration-history
-// @access  Private/Admin
-export const getRegistrationHistory = asyncHandler(async (req, res) => {
-  const registrationHistory = await Registration.find().select(
-    "email name registrationToken status"
-  );
-  res.json(registrationHistory);
-});
+
 
 // @desc    Onboarding
 // @route   POST /api/users/onboarding
@@ -378,14 +292,13 @@ export const updateInfo = asyncHandler(async (req, res) => {
 // @access  Public
 export const getOnboarding = asyncHandler(async (req, res) => {
   const username = req.query.username;
+  console.log(username);
   const user = await User.findOne({ username });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
   return res.status(200).json(user);
 });
-
-
 
 // @desc    Get one user's visa status by ID (for employee)
 // @route   GET /api/users/visa-status/:id
@@ -444,4 +357,3 @@ export const updateVisaStatus = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
-

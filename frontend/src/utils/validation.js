@@ -15,6 +15,14 @@ export const validatePassword = (password) => {
   }
   return null;
 };
+export const validateName = (name) => {
+  if (!name) {
+    return "Name is required";
+  } else if (name.length < 5) {
+    return "Name must be at least 5 characters";
+  }
+  return null;
+};
 
 export const validateUsername = (username) => {
   if (!username) {

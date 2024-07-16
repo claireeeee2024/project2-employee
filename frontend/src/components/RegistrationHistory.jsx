@@ -1,5 +1,5 @@
 import React from "react";
-import { useGetRegistrationHistoryQuery } from "../slices/registrationApiSlice";
+import { useGetRegistrationHistoryQuery } from "../slices/hrApiSlice";
 import { Table } from "react-bootstrap";
 import Loader from "./Loader";
 

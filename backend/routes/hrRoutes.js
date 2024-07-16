@@ -1,19 +1,20 @@
 import express from "express";
 import {
-    getEmployeeProfiles,
-    getEmployeeFullProfile,
-    updateVisaDocumentStatus,
-    getAllVisaStatus,
-    getVisaStatusInProgress,
-    searchEmployee,
+  getEmployeeProfiles,
+  getEmployeeFullProfile,
+  updateVisaDocumentStatus,
+  getAllVisaStatus,
+  getVisaStatusInProgress,
+  searchEmployee,
+  sendRegistrationToken,
+  listOnboardings,
+  updateOnboardingStatusByUsername,
+  getRegistrationHistory,
 } from "../controllers/hrController.js";
 
 import { protect, admin } from "../middleware/authMiddleware.js";
 
-
 const router = express.Router();
-
-
 
 // @desc    Get all employees profile
 // @route   GET /api/users/profile
@@ -44,5 +45,11 @@ router.get("/visa-status/in-progress", protect, admin, getVisaStatusInProgress);
 // @route GET /api/users/search
 // @access Private/Admin
 router.get("/search", protect, admin, searchEmployee);
+
+
+router.post("/send-token", protect, admin, sendRegistrationToken);
+router.get("/registration-history", protect, admin, getRegistrationHistory);
+router.get("/onboardings", protect, admin, listOnboardings);
+router.put("/onboarding/:username", protect, admin, updateOnboardingStatusByUsername);
 
 export default router;

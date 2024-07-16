@@ -3,11 +3,9 @@ import {
   getVisaStatusById,
   updateVisaStatus,
   authUser,
-  sendRegistrationToken,
   verifyRegistrationToken,
   registerUser,
   logoutUser,
-  getRegistrationHistory,
   getOnboarding,
   postOnboarding,
   updateInfo,
@@ -27,14 +25,11 @@ router.get("/visa-status/:id", protect, getVisaStatusById);
 // @access  Private
 router.put("/visa-status/:id", protect, updateVisaStatus);
 
-
-router.post("/send-token", protect, admin, sendRegistrationToken);
 router.post("/verify-token", verifyRegistrationToken);
 router.post("/register", registerUser);
 router.post("/logout", logoutUser);
-router.get("/registration-history", protect, admin, getRegistrationHistory);
-// router.get("/onboarding/:username", getOnboarding);
 router.post("/login", authUser);
+
 router.post("/onboarding", postOnboarding);
 router.get("/onboarding", getOnboarding);
 router.put("/info", updateInfo);

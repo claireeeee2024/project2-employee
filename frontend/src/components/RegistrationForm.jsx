@@ -1,9 +1,9 @@
 // src/components/RegistrationForm.js
 import React, { useState } from "react";
-import { useSendTokenMutation } from "../slices/registrationApiSlice";
+import { useSendTokenMutation } from "../slices/hrApiSlice";
 import { Form, Button, Spinner, Alert } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { validateUsername, validateEmail } from "../utils/validation";
+import { validateName, validateEmail } from "../utils/validation";
 const RegistrationForm = ({ handleClose }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ const RegistrationForm = ({ handleClose }) => {
     setError("");
     setSuccess("");
     const formErrors = {
-      name: validateUsername(name),
+      name: validateName(name),
       email: validateEmail(email),
     };
     setErrors(formErrors);
@@ -37,10 +37,11 @@ const RegistrationForm = ({ handleClose }) => {
         handleClose();
       }, 1000);
     } catch (err) {
+      // console.log(err);
       setError(
         sendTokenError?.data?.message ||
           sendTokenError?.error ||
-          err.data?.message ||
+          err.data?.error ||
           "Failed to send token"
       );
     }

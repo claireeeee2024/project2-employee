@@ -1,10 +1,17 @@
 import { Nav } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice";
+import {
+  clearSelectedUsername,
+  clearOnboardingStatus,
+} from "../slices/onboardingSlice";
+
 const Sidebar = ({ navStructure }) => {
   const dispatch = useDispatch();
   const handleClick = (label) => {
     if (label === "Logout") {
+      dispatch(clearSelectedUsername());
+      dispatch(clearOnboardingStatus());
       dispatch(logout());
     }
   };

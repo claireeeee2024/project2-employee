@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useGetOnboardingApplicationsQuery } from "../../slices/onboardingApiSlice";
+import { useGetOnboardingApplicationsQuery } from "../../slices/hrApiSlice";
 import "./index.css";
-import { setSortOption } from "../../slices/onboardingSlice"; // Import your Redux action for setting sort option
+import {
+  setSelectedUsername,
+  setSortOption,
+  setOnboardingStatus,
+} from "../../slices/onboardingSlice"; // Import your Redux action for setting sort option
 import {
   Row,
   Col,
@@ -38,9 +42,12 @@ const OnboardingManagementScreen = () => {
     dispatch(setSortOption(option)); // Dispatch action to set sort option in Redux state
   };
 
-  const handleViewApplication = (application) => {
-    console.log(application);
-    navigate(`/test/${application._id}`);
+  const handleViewApplication = (username) => {
+    // console.log(username);
+    // navigate(`/test/${application._id}`);
+    dispatch(setSelectedUsername(username));
+    dispatch(setOnboardingStatus(sortOption));
+    navigate("/onboarding");
   };
 
   if (error) {
@@ -97,7 +104,9 @@ const OnboardingManagementScreen = () => {
                         <Button
                           variant="secondary"
                           size="sm"
-                          onClick={() => handleViewApplication(application)}
+                          onClick={() =>
+                            handleViewApplication(application.username)
+                          }
                         >
                           View Application
                         </Button>

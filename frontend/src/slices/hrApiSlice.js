@@ -47,6 +47,37 @@ export const hrApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["HR"],
     }),
+    sendToken: builder.mutation({
+      query: (data) => ({
+        url: `${HR_URL}/send-token`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Registration"],
+    }),
+    getRegistrationHistory: builder.query({
+      query: () => ({
+        url: `${HR_URL}/registration-history`,
+        method: "GET",
+      }),
+      providesTags: ["Registration"],
+    }),
+    getOnboardingApplications: builder.query({
+      query: ({ sort }) => ({
+        url: `${HR_URL}/onboardings`,
+        params: { sort },
+        method: "GET",
+      }),
+      providesTags: ["Onboarding"],
+    }),
+    updateOnboardingStatus: builder.mutation({
+      query: ({ username, status, feedback }) => ({
+        url: `${HR_URL}/onboarding/${username}`,
+        method: "PUT",
+        body: { status, feedback },
+      }),
+      invalidatesTags: ["Onboarding"],
+    }),
   }),
 });
 
@@ -57,4 +88,8 @@ export const {
   useGetAllVisaStatusQuery,
   useGetVisaStatusInProgressQuery,
   useSearchEmployeeQuery,
+  useSendTokenMutation,
+  useGetRegistrationHistoryQuery,
+  useGetOnboardingApplicationsQuery,
+  useUpdateOnboardingStatusMutation,
 } = hrApiSlice;

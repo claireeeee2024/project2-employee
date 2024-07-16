@@ -18,6 +18,15 @@ export const validatePassword = (password) => {
   return null;
 };
 
+export const validateName = (name) => {
+  if (!name) {
+    return "Name is required";
+  } else if (name.length < 5) {
+    return "Name must be at least 5 characters";
+  }
+  return null;
+};
+
 /**
  * Validates the document sequence for a given user and document type.
  *
@@ -28,7 +37,7 @@ export const validatePassword = (password) => {
 export const validateDocumentSequence = (user, documentType) => {
   // Validate the document type
 
-  const documentSequence = ['OPT Receipt', 'OPT EAD', 'I-983', 'I-20'];
+  const documentSequence = ["OPT Receipt", "OPT EAD", "I-983", "I-20"];
   if (!documentSequence.includes(documentType)) {
     return { isValid: false, message: "Invalid document type" };
   }
@@ -36,7 +45,9 @@ export const validateDocumentSequence = (user, documentType) => {
   // Validate document sequence
   const currentIndex = documentSequence.indexOf(documentType);
   if (currentIndex > 0) {
-    const previousDocumentType = mapDocumentType(documentSequence[currentIndex - 1]);
+    const previousDocumentType = mapDocumentType(
+      documentSequence[currentIndex - 1]
+    );
     const previousDocument = user.visaStatus.documents[previousDocumentType];
 
     if (!previousDocument || previousDocument.status !== "Approved") {
@@ -49,8 +60,14 @@ export const validateDocumentSequence = (user, documentType) => {
 
   // Check if the current document has already been approved
   const document = mapDocumentType(documentType);
-  if (user.visaStatus.documents[document] && user.visaStatus.documents[document].status === 'Approved') {
-    return { isValid: false, message: "This document has already been approved and cannot be changed" };
+  if (
+    user.visaStatus.documents[document] &&
+    user.visaStatus.documents[document].status === "Approved"
+  ) {
+    return {
+      isValid: false,
+      message: "This document has already been approved and cannot be changed",
+    };
   }
 
   return { isValid: true, message: "Document sequence is valid" };
@@ -67,10 +84,10 @@ export const validateUsername = (username) => {
 
 export const mapDocumentType = (frontendDocType) => {
   const mapping = {
-    'OPT Receipt': 'optReceipt',
-    'OPT EAD': 'optEAD',
-    'I-983': 'i983',
-    'I-20': 'i20'
+    "OPT Receipt": "optReceipt",
+    "OPT EAD": "optEAD",
+    "I-983": "i983",
+    "I-20": "i20",
   };
   return mapping[frontendDocType] || frontendDocType;
 };
