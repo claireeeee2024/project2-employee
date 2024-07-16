@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Container, Button, Modal, Row, Col } from "react-bootstrap";
 import RegistrationForm from "../../components/RegistrationForm";
 import RegistrationHistory from "../../components/RegistrationHistory";
-import Loader from "../../components/Loader";
 import "./index.css";
+
 const RegistrationManagementScreen = () => {
   const [show, setShow] = useState(false);
 

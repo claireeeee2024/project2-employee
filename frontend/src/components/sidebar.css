@@ -1,0 +1,12 @@
+.dropdown-toggle::after {
+  display: none;
+}
+.d-md-block {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.no-margin-padding {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}

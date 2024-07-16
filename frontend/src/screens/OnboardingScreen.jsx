@@ -13,28 +13,30 @@ import PendingField from "../components/PendingField";
 import NotSubmittedField from "../components/NotSubmittedField";
 import { useUploadProfileMutation } from "../slices/usersApiSlice";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { setOnboardingStatus } from "../slices/onboardingSlice";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+
 const OnboardingScreen = () => {
   const [postOnboarding] = usePostOnboardingMutation();
   const { userInfo } = useSelector((state) => state.auth);
-  const username =
-    useSelector((state) => state.onboarding.username) || userInfo.username;
-  console.log(username);
+  const username = useParams().username || userInfo.username;
+
+  const { data, isLoading, error, refetch } = useGetOnboardingQuery({
+    username: username,
+  });
   const onboardingStatus =
-    useSelector((state) => state.onboarding.onboardingStatus) ||
-    userInfo.onboardingStatus;
+    userInfo.role === "hr" && data
+      ? data.onboardingStatus
+      : userInfo.onboardingStatus;
+
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   useEffect(() => {
     if (!userInfo) {
       navigate("/");
     }
   }, [userInfo, navigate]);
 
-  const { data, isLoading, error, refetch } = useGetOnboardingQuery({
-    username: username,
-  });
+  const dispatch = useDispatch();
   const [updateApplicationStatus, { isLoading: isUpdatingStatus }] =
     useUpdateOnboardingStatusMutation();
 
@@ -50,18 +52,12 @@ const OnboardingScreen = () => {
       }).unwrap();
       console.log("handleSave", status, feedback);
 
-      dispatch(setOnboardingStatus(status));
       handleCloseModal();
       refetch();
     } catch (err) {
       console.error("Failed to update application status:", err);
     }
   };
-  // const {
-  //   data: application,
-  //   isLoading: applicationLoading,
-  //   error: applicationError,
-  // } = useGetApplicationByIdQuery(id, { skip: userInfo.role === "employee" });
 
   const [formData, setFormData] = useState({
     firstName: "",

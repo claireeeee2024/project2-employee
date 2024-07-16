@@ -3,11 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useGetOnboardingApplicationsQuery } from "../../slices/hrApiSlice";
 import "./index.css";
-import {
-  setSelectedUsername,
-  setSortOption,
-  setOnboardingStatus,
-} from "../../slices/onboardingSlice"; // Import your Redux action for setting sort option
+import { setSortOption } from "../../slices/onboardingSlice";
 import {
   Row,
   Col,
@@ -16,9 +12,9 @@ import {
   DropdownButton,
   Table,
   Button,
-  ButtonGroup,
 } from "react-bootstrap";
 import Loader from "../../components/Loader";
+
 const OnboardingManagementScreen = () => {
   const sortOption =
     useSelector((state) => state.onboarding.sortOption) || "Pending";
@@ -39,15 +35,12 @@ const OnboardingManagementScreen = () => {
   }, [sortOption, refetch]);
 
   const handleSortChange = (option) => {
-    dispatch(setSortOption(option)); // Dispatch action to set sort option in Redux state
+    dispatch(setSortOption(option));
   };
 
   const handleViewApplication = (username) => {
-    // console.log(username);
-    // navigate(`/test/${application._id}`);
-    dispatch(setSelectedUsername(username));
-    dispatch(setOnboardingStatus(sortOption));
-    navigate("/onboarding");
+    const url = `/onboarding/${username}`;
+    window.open(url, "_blank");
   };
 
   if (error) {

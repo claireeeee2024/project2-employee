@@ -40,6 +40,10 @@ const router = createBrowserRouter(
           element={<EmployeeVisaManagement />}
         />
         <Route path="" element={<HrRoute />}>
+          <Route
+            path="/onboarding/:username"
+            element={<OnboardingScreen />}
+          ></Route>
           <Route path="/profiles/:employeeId" element={<Profile />}></Route>
           <Route path="/profiles" element={<ProfileScreen />}></Route>
           <Route
