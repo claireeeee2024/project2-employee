@@ -16,30 +16,51 @@ import "./index.css";
 import HrRoute from "./components/HrRoute";
 import OnboardingManagementScreen from "./screens/hr/OnboardingManagementScreen";
 import RegistrationManagementScreen from "./screens/hr/RegistrationManagementScreen";
-import Test from "./screens/Test";
 import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ErrorScreen from "./screens/ErrorScreen";
+import ProfileScreen from "./screens/hr/ProfileScreen";
+import VisaMangamentScreen from "./screens/hr/VisaMangamentScreen";
+import { Profile } from "./components/Profile";
+import { EmployeeVisaManagement } from "./screens/EmployeeVisaScreen";
+import ProtectedRoute from "./components/ProtectedRoute";
+import TokenInvalidScreen from "./screens/TokenInvalidScreen";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route index={true} path="/" element={<HomeScreen />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
-      <Route path="/onboarding" element={<OnboardingScreen />} />
-      <Route path="/personalinfo" element={<PersonalInfoScreen />} />
-      <Route path="/test/:id" element={<Test />} />
-      <Route path="" element={<HrRoute />}>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/onboarding" element={<OnboardingScreen />} />
+        <Route path="/personalinfo" element={<PersonalInfoScreen />} />
         <Route
-          path="/onboarding-management"
-          element={<OnboardingManagementScreen />}
-        ></Route>
-        <Route
-          path="/registration-management"
-          element={<RegistrationManagementScreen />}
-        ></Route>
+          path="/employeeVisaManagement"
+          element={<EmployeeVisaManagement />}
+        />
+        <Route path="" element={<HrRoute />}>
+          <Route
+            path="/onboarding/:username"
+            element={<OnboardingScreen />}
+          ></Route>
+          <Route path="/profiles/:employeeId" element={<Profile />}></Route>
+          <Route path="/profiles" element={<ProfileScreen />}></Route>
+          <Route
+            path="/visa-management"
+            element={<VisaMangamentScreen />}
+          ></Route>
+          <Route
+            path="/onboarding-management"
+            element={<OnboardingManagementScreen />}
+          ></Route>
+          <Route
+            path="/registration-management"
+            element={<RegistrationManagementScreen />}
+          ></Route>
+        </Route>
       </Route>
+      <Route path="/invalid-token" element={<TokenInvalidScreen />} />
       <Route path="*" element={<ErrorScreen />} />
     </Route>
   )

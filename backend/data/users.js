@@ -1,27 +1,20 @@
 import bcrypt from "bcryptjs";
 const users = [
+  // hr onboarding approved
   {
     username: "hrtest",
     password: bcrypt.hashSync("123456", 10),
     email: "hr@email.com",
     role: "hr",
     personalInfo: {
-      firstName: "Jane",
-      lastName: "Smith",
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    username: "john_doe",
-    password: "password123",
-    email: "john.doe@example.com",
-    role: "employee",
-    personalInfo: {
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "HR",
+      lastName: "Williams",
+      middleName: "",
+      preferredName: "",
+      profilePicture: "",
+      ssn: "123456789",
       dateOfBirth: new Date("1990-01-15"),
-      gender: "male",
+      gender: "female",
     },
     address: {
       building: "123",
@@ -36,252 +29,20 @@ const users = [
     },
     citizenshipStatus: {
       isPermanentResident: true,
-      citizenshipType: "Green Card",
-      workAuthorizationType: "H1-B",
-      visaTitle: "Software Engineer",
-      startDate: new Date("2023-01-01"),
-      endDate: new Date("2025-01-01"),
-    },
-    onboardingStatus: "Pending",
-    visaStatus: {
-      currentDocument: "OPT EAD",
-      documents: {
-        optReceipt: {
-          file: "opt_receipt.pdf",
-          status: "Pending",
-        },
-        optEAD: {
-          file: null,
-          status: "Pending",
-        },
-        i983: {
-          file: null,
-          status: "Pending",
-        },
-        i20: {
-          file: null,
-          status: "Pending",
-        },
-      },
-    },
-  },
-  {
-    username: "jane_smith",
-    password: "password456",
-    email: "jane.smith@example.com",
-    role: "employee",
-    personalInfo: {
-      firstName: "Jane",
-      lastName: "Smith",
-      dateOfBirth: new Date("1985-05-20"),
-      gender: "female",
-    },
-    address: {
-      building: "456",
-      street: "Oak Ave",
-      city: "Smallville",
-      state: "NY",
-      zip: "54321",
-    },
-    contactInfo: {
-      cellPhone: "987-654-3210",
-      workPhone: "876-543-2109",
-    },
-    citizenshipStatus: {
-      isPermanentResident: false,
       citizenshipType: "Citizen",
-      workAuthorizationType: null,
-      visaTitle: null,
-      startDate: null,
-      endDate: null,
     },
-    onboardingStatus: "Pending",
-    visaStatus: {
-      currentDocument: null,
-      documents: {
-        optReceipt: {
-          file: null,
-          status: "Pending",
-        },
-        optEAD: {
-          file: null,
-          status: "Pending",
-        },
-        i983: {
-          file: null,
-          status: "Pending",
-        },
-        i20: {
-          file: null,
-          status: "Pending",
-        },
-      },
-    },
+    onboardingStatus: "Approved",
   },
+  // registered, not submitted
   {
     username: "alice_johnson",
-    password: "alicePassword789",
+    password: bcrypt.hashSync("123456", 10),
     email: "alice.johnson@example.com",
-    role: "employee",
-    personalInfo: {
-      firstName: "Alice",
-      lastName: "Johnson",
-      dateOfBirth: new Date("1992-03-12"),
-      gender: "female",
-    },
-    address: {
-      building: "789",
-      street: "Pine St",
-      city: "Springfield",
-      state: "IL",
-      zip: "62704",
-    },
-    contactInfo: {
-      cellPhone: "321-654-0987",
-      workPhone: "123-456-7892",
-    },
-    citizenshipStatus: {
-      isPermanentResident: false,
-      citizenshipType: "Work Authorization",
-      workAuthorizationType: "F1(CPT/OPT)",
-      visaTitle: "Intern",
-      startDate: new Date("2023-06-01"),
-      endDate: new Date("2024-06-01"),
-    },
-    onboardingStatus: "Pending",
-    visaStatus: {
-      currentDocument: "OPT Receipt",
-      documents: {
-        optReceipt: {
-          file: "opt_receipt_alice.pdf",
-          status: "Pending",
-        },
-        optEAD: {
-          file: "opt_ead_alice.pdf",
-          status: "Pending",
-        },
-        i983: {
-          file: "i983_alice.pdf",
-          status: "Pending",
-        },
-        i20: {
-          file: "i20_alice.pdf",
-          status: "Pending",
-        },
-      },
-    },
   },
-  {
-    username: "bob_williams",
-    password: "bobSecurePass123",
-    email: "bob.williams@example.com",
-    role: "employee",
-    personalInfo: {
-      firstName: "Bob",
-      lastName: "Williams",
-      dateOfBirth: new Date("1980-09-23"),
-      gender: "male",
-    },
-    address: {
-      building: "456",
-      street: "Maple Ave",
-      city: "Metropolis",
-      state: "TX",
-      zip: "75001",
-    },
-    contactInfo: {
-      cellPhone: "456-789-0123",
-      workPhone: "567-890-1234",
-    },
-    citizenshipStatus: {
-      isPermanentResident: true,
-      citizenshipType: "Citizen",
-      workAuthorizationType: null,
-      visaTitle: null,
-      startDate: null,
-      endDate: null,
-    },
-    onboardingStatus: "Pending",
-    visaStatus: {
-      currentDocument: null,
-      documents: {
-        optReceipt: {
-          file: null,
-          status: "Pending",
-        },
-        optEAD: {
-          file: null,
-          status: "Pending",
-        },
-        i983: {
-          file: null,
-          status: "Pending",
-        },
-        i20: {
-          file: null,
-          status: "Pending",
-        },
-      },
-    },
-  },
-  {
-    username: "carol_lee",
-    password: "carolStrongPass456",
-    email: "carol.lee@example.com",
-    role: "employee",
-    personalInfo: {
-      firstName: "Carol",
-      lastName: "Lee",
-      dateOfBirth: new Date("1995-11-07"),
-      gender: "female",
-    },
-    address: {
-      building: "102",
-      street: "Elm St",
-      city: "Gotham",
-      state: "NY",
-      zip: "10001",
-    },
-    contactInfo: {
-      cellPhone: "789-012-3456",
-      workPhone: "890-123-4567",
-    },
-    citizenshipStatus: {
-      isPermanentResident: false,
-      citizenshipType: "Work Authorization",
-      workAuthorizationType: "H1-B",
-      visaTitle: "Software Developer",
-      startDate: new Date("2023-02-15"),
-      endDate: new Date("2026-02-15"),
-    },
-    onboardingStatus: "Pending",
-    visaStatus: {
-      currentDocument: "I-983",
-      documents: {
-        optReceipt: {
-          file: "opt_receipt_carol.pdf",
-          status: "Rejected",
-          feedback: "Missing information",
-        },
-        optEAD: {
-          file: "opt_ead_carol.pdf",
-          status: "Pending",
-        },
-        i983: {
-          file: "i983_carol.pdf",
-          status: "Rejected",
-          feedback: "Incomplete form",
-        },
-        i20: {
-          file: "i20_carol.pdf",
-          status: "Pending",
-        },
-      },
-    },
-  },
+  // onboarding not submitted
   {
     username: "david_brown",
-    password: "davidPassword321",
+    password: bcrypt.hashSync("123456", 10),
     email: "david.brown@example.com",
     role: "employee",
     personalInfo: {
@@ -302,39 +63,57 @@ const users = [
       workPhone: "123-456-7893",
     },
     citizenshipStatus: {
-      isPermanentResident: true,
-      citizenshipType: "Green Card",
-      workAuthorizationType: "L2",
+      isPermanentResident: false,
+      citizenshipType: "Work Authorization",
       visaTitle: "Project Manager",
       startDate: new Date("2021-01-01"),
       endDate: new Date("2023-12-31"),
     },
     onboardingStatus: "Not Submitted",
     visaStatus: {
-      currentDocument: "I-20",
+      currentDocument: "OPT Receipt",
       documents: {
         optReceipt: {
-          file: "opt_receipt_david.pdf",
-          status: "Approved",
-        },
-        optEAD: {
-          file: "opt_ead_david.pdf",
-          status: "Approved",
-        },
-        i983: {
-          file: "i983_david.pdf",
-          status: "Approved",
-        },
-        i20: {
-          file: "i20_david.pdf",
-          status: "Approved",
+          file: "opt_receipt_david_brown.pdf",
+          status: "Pending",
         },
       },
     },
   },
+  // onboarding citizen rejected
+  {
+    username: "carol_lee",
+    password: bcrypt.hashSync("123456", 10),
+    email: "carol.lee@example.com",
+    role: "employee",
+    personalInfo: {
+      firstName: "Carol",
+      lastName: "Lee",
+      dateOfBirth: new Date("1995-11-07"),
+      gender: "female",
+    },
+    address: {
+      building: "102",
+      street: "Elm St",
+      city: "Gotham",
+      state: "NY",
+      zip: "10001",
+    },
+    contactInfo: {
+      cellPhone: "789-012-3456",
+      workPhone: "890-123-4567",
+    },
+    citizenshipStatus: {
+      isPermanentResident: true,
+      citizenshipType: "Citizen",
+    },
+    onboardingStatus: "Rejected",
+    onboardingFeedback: "Invalid Formate.",
+  },
+  // onboarding opt recipt pending
   {
     username: "eva_martin",
-    password: "evaSecurePass789",
+    password: bcrypt.hashSync("123456", 10),
     email: "eva.martin@example.com",
     role: "employee",
     personalInfo: {
@@ -356,22 +135,131 @@ const users = [
     },
     citizenshipStatus: {
       isPermanentResident: false,
-      citizenshipType: "Citizen",
-      workAuthorizationType: null,
-      visaTitle: null,
-      startDate: null,
-      endDate: null,
+      citizenshipType: "Work Authorization",
+      workAuthorizationType: "F1(CPT/OPT)",
+      visaTitle: "Software Engineer",
+      startDate: new Date("2024-11-07"),
+      endDate: new Date("2024-11-07"),
     },
-    onboardingStatus: "Not Submitted",
+    onboardingStatus: "Pending",
     visaStatus: {
-      currentDocument: null,
+      currentDocument: "OPT Receipt",
       documents: {
         optReceipt: {
-          file: null,
+          file: "opt_receipt_eva_martin.pdf",
           status: "Pending",
         },
         optEAD: {
           file: null,
+          status: "Pending",
+        },
+        i983: {
+          file: null,
+          status: "Pending",
+        },
+        i20: {
+          file: null,
+          status: "Pending",
+        },
+      },
+    },
+  },
+  // onboarding opt recipt rejected
+  {
+    username: "bob_williams",
+    password: bcrypt.hashSync("123456", 10),
+    email: "bob.williams@example.com",
+    role: "employee",
+    personalInfo: {
+      firstName: "Bob",
+      lastName: "Williams",
+      dateOfBirth: new Date("1980-09-23"),
+      gender: "male",
+    },
+    address: {
+      building: "456",
+      street: "Maple Ave",
+      city: "Metropolis",
+      state: "TX",
+      zip: "75001",
+    },
+    contactInfo: {
+      cellPhone: "456-789-0123",
+      workPhone: "567-890-1234",
+    },
+    citizenshipStatus: {
+      isPermanentResident: false,
+      citizenshipType: "Work Authorization",
+      workAuthorizationType: "F1(CPT/OPT)",
+      visaTitle: null,
+      startDate: new Date("2023-09-23"),
+      endDate: new Date("2024-09-23"),
+    },
+    onboardingStatus: "Rejected",
+    onboardingFeedback: "Missing something.",
+    visaStatus: {
+      currentDocument: "OPT Receipt",
+      documents: {
+        optReceipt: {
+          file: "opt_receipt_bob_williams.pdf",
+          status: "Rejected",
+        },
+        optEAD: {
+          file: null,
+          status: "Pending",
+        },
+        i983: {
+          file: null,
+          status: "Pending",
+        },
+        i20: {
+          file: null,
+          status: "Pending",
+        },
+      },
+    },
+  },
+  // visa opt ead pending
+  {
+    username: "jane_smith",
+    password: bcrypt.hashSync("123456", 10),
+    email: "jane.smith@example.com",
+    role: "employee",
+    personalInfo: {
+      firstName: "Jane",
+      lastName: "Smith",
+      dateOfBirth: new Date("1985-05-20"),
+      gender: "female",
+    },
+    address: {
+      building: "456",
+      street: "Oak Ave",
+      city: "Smallville",
+      state: "NY",
+      zip: "54321",
+    },
+    contactInfo: {
+      cellPhone: "987-654-3210",
+      workPhone: "876-543-2109",
+    },
+    citizenshipStatus: {
+      isPermanentResident: false,
+      citizenshipType: "Work Authorization",
+      workAuthorizationType: "F1(CPT/OPT)",
+      visaTitle: null,
+      startDate: new Date("2020-06-01"),
+      endDate: new Date("2023-06-01"),
+    },
+    onboardingStatus: "Approved",
+    visaStatus: {
+      currentDocument: "OPT EAD",
+      documents: {
+        optReceipt: {
+          file: "opt_receipt_jane_smith.pdf",
+          status: "Approved",
+        },
+        optEAD: {
+          file: "opt_ead_jane_smith.pdf",
           status: "Pending",
         },
         i983: {

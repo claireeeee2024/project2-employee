@@ -39,26 +39,41 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    // register: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USERS_URL}/register`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    // }),
-    // logout: builder.mutation({
-    //   query: () => ({
-    //     url: `${USERS_URL}/logout`,
-    //     method: "POST",
-    //   }),
-    // }),
-    // updatePassword: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USERS_URL}/forgot-password`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    // }),
+    verifyToken: builder.mutation({
+      query: (token) => ({
+        url: `${USERS_URL}/verify-token`,
+        method: "POST",
+        body: token,
+      }),
+    }),
+    register: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/register`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/logout`,
+        method: "POST",
+      }),
+    }),
+    getVisaStatusById: builder.query({
+      query: (id) => ({
+        url: `${USERS_URL}/visa-status/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+    updateVisaStatus: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/visa-status/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -71,4 +86,7 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useUpdatePasswordMutation,
+  useGetVisaStatusByIdQuery,
+  useUpdateVisaStatusMutation,
+  useVerifyTokenMutation,
 } = userApiSlice;

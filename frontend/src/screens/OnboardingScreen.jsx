@@ -1,32 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Row, Col, Container } from "react-bootstrap";
+import { Form, Button, Row, Col, Alert, Container } from "react-bootstrap";
+import CustomModal from "../components/CustomModal";
+
 import {
   usePostOnboardingMutation,
   useGetOnboardingQuery,
 } from "../slices/usersApiSlice";
+import { useUpdateOnboardingStatusMutation } from "../slices/hrApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../slices/authSlice";
 import PendingField from "../components/PendingField";
 import NotSubmittedField from "../components/NotSubmittedField";
 import { useUploadProfileMutation } from "../slices/usersApiSlice";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 const OnboardingScreen = () => {
   const [postOnboarding] = usePostOnboardingMutation();
   const { userInfo } = useSelector((state) => state.auth);
+  const username = useParams().username || userInfo.username;
+
+  const { data, isLoading, error, refetch } = useGetOnboardingQuery({
+    username: username,
+  });
+  const onboardingStatus =
+    userInfo.role === "hr" && data
+      ? data.onboardingStatus
+      : userInfo.onboardingStatus;
+
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!userInfo) {
       navigate("/");
     }
   }, [userInfo, navigate]);
-  const { username, onboardingStatus } = userInfo;
-  const { data, isLoading, error } = useGetOnboardingQuery({
-    username: username,
-  });
 
   const dispatch = useDispatch();
+  const [updateApplicationStatus, { isLoading: isUpdatingStatus }] =
+    useUpdateOnboardingStatusMutation();
+
+  const [showModal, setShowModal] = useState(false);
+  const handleCloseModal = () => setShowModal(false);
+  const handleShowModal = () => setShowModal(true);
+  const handleSave = async (status, feedback) => {
+    try {
+      await updateApplicationStatus({
+        username,
+        status,
+        feedback,
+      }).unwrap();
+      console.log("handleSave", status, feedback);
+
+      handleCloseModal();
+      refetch();
+    } catch (err) {
+      console.error("Failed to update application status:", err);
+    }
+  };
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -119,7 +151,7 @@ const OnboardingScreen = () => {
           },
         });
       }
-      if (onboardingStatus === "Approved") {
+      if (userInfo.role === "employee" && onboardingStatus === "Approved") {
         navigate("/");
       }
     }
@@ -214,30 +246,51 @@ const OnboardingScreen = () => {
     return <div>Loading</div>;
   }
   if (error) {
-    navigate("/");
+    return <div>{error}</div>;
   }
-  return onboardingStatus === "Not Submitted" ? (
-    <NotSubmittedField
-      formData={formData}
-      setFormData={setFormData}
-      handleChange={handleChange}
-      handleAddressChange={handleAddressChange}
-      handleReferenceChange={handleReferenceChange}
-      handleEmergencyContactChange={handleEmergencyContactChange}
-      addEmergencyContact={addEmergencyContact}
-      handleFileChange={handleFileChange}
-      handlePictureUpload={handlePictureUpload}
-      handlePictureChange={handlePictureChange}
-      handleSubmit={handleSubmit}
-    />
-  ) : onboardingStatus === "Pending" ? (
-    <>
-      <h1>Please wait for HR to review your application.</h1>
-      <PendingField data={data} />
-    </>
-  ) : (
-    <>
-      <h1>rejected reason: {data.onboardingFeedback}</h1>
+
+  if (userInfo.role === "hr") {
+    if (onboardingStatus === "Pending") {
+      return (
+        <Container>
+          <Alert variant="primary">
+            This application is Pending.
+            <Button
+              variant="link"
+              className="m-0 p-1"
+              onClick={handleShowModal}
+            >
+              Click here to update status
+            </Button>
+          </Alert>
+          <PendingField data={data} />
+          <CustomModal
+            show={showModal}
+            handleClose={handleCloseModal}
+            handleSave={handleSave}
+            isUpdatingStatus={isUpdatingStatus}
+          />
+        </Container>
+      );
+    } else if (onboardingStatus === "Approved") {
+      return (
+        <Container>
+          <Alert variant="success">This application is Approved.</Alert>
+          <PendingField data={data} />
+        </Container>
+      );
+    } else if (onboardingStatus === "Rejected") {
+      return (
+        <Container>
+          <Alert variant="danger">
+            This application is Rejected. Feedback: {data.onboardingFeedback}
+          </Alert>
+          <PendingField data={data} />
+        </Container>
+      );
+    }
+  } else {
+    return onboardingStatus === "Not Submitted" ? (
       <NotSubmittedField
         formData={formData}
         setFormData={setFormData}
@@ -251,8 +304,30 @@ const OnboardingScreen = () => {
         handlePictureChange={handlePictureChange}
         handleSubmit={handleSubmit}
       />
-    </>
-  );
+    ) : onboardingStatus === "Pending" ? (
+      <Container>
+        <h1>Please wait for HR to review your application.</h1>
+        <PendingField data={data} />
+      </Container>
+    ) : (
+      <Container>
+        <h1>Rejected Reason: {data.onboardingFeedback}</h1>
+        <NotSubmittedField
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          handleAddressChange={handleAddressChange}
+          handleReferenceChange={handleReferenceChange}
+          handleEmergencyContactChange={handleEmergencyContactChange}
+          addEmergencyContact={addEmergencyContact}
+          handleFileChange={handleFileChange}
+          handlePictureUpload={handlePictureUpload}
+          handlePictureChange={handlePictureChange}
+          handleSubmit={handleSubmit}
+        />
+      </Container>
+    );
+  }
 };
 
 export default OnboardingScreen;
