@@ -115,7 +115,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists.");
+    throw new Error("Email is already registered.");
   }
   // 5. Check if the username is already taken
   const usernameExists = await User.findOne({ username });
@@ -153,8 +153,6 @@ export const logoutUser = asyncHandler(async (req, res) => {
   res.clearCookie("jwt");
   res.status(200).send({ message: "Logged out successfully" });
 });
-
-
 
 // @desc    Onboarding
 // @route   POST /api/users/onboarding

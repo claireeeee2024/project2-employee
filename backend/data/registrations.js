@@ -62,12 +62,30 @@ const registrations = [
     expiresAt: new Date(Date.now() + 3 * 60 * 60 * 1000),
     status: "Submitted",
   },
+  // visa i983 rejected
+  {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    registrationToken:
+      "51275379a133a9a0d63663523c904a7eaf577b63f00854792185778c35102902",
+    expiresAt: new Date(Date.now() + 3 * 60 * 60 * 1000),
+    status: "Submitted",
+  },
+  // visa all approved
+  {
+    name: "linda_smith",
+    email: "linda.smith@example.com",
+    registrationToken:
+      "e5be70a04565a438b9299b4e379803fb342ec7da4d4509a31b24dcf5aeac5121",
+    expiresAt: new Date(),
+    status: "Submitted",
+  },
   // token 1 expired
   {
     name: "token1",
     email: "token1@example.com",
     registrationToken:
-      "e5be70a04565a438b9299b4e379803fb342ec7da4d4509a31b24dcf5aeac5121",
+      "247f91b49f87205ef7f332511d23cec405ea7ca96a763b6cb3cf78adee850346",
     expiresAt: new Date(),
     status: "Not Submitted",
   },

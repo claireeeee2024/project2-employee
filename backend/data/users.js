@@ -27,6 +27,24 @@ const users = [
       cellPhone: "123-456-7890",
       workPhone: "234-567-8901",
     },
+    reference: {
+      firstName: "Emily",
+      lastName: "Clark",
+      middleName: "",
+      phone: "345-678-9012",
+      email: "emily.clark@example.com",
+      relationship: "Colleague",
+    },
+    emergencyContacts: [
+      {
+        firstName: "Michael",
+        lastName: "Williams",
+        middleName: "",
+        phone: "456-789-0123",
+        email: "michael.williams@example.com",
+        relationship: "Spouse",
+      },
+    ],
     citizenshipStatus: {
       isPermanentResident: true,
       citizenshipType: "Citizen",
@@ -62,6 +80,24 @@ const users = [
       cellPhone: "012-345-6789",
       workPhone: "123-456-7893",
     },
+    reference: {
+      firstName: "David",
+      lastName: "Jones",
+      middleName: "",
+      phone: "567-890-1234",
+      email: "david.jones@example.com",
+      relationship: "Manager",
+    },
+    emergencyContacts: [
+      {
+        firstName: "Sara",
+        lastName: "Johnson",
+        middleName: "",
+        phone: "678-901-2345",
+        email: "sara.johnson@example.com",
+        relationship: "Sister",
+      },
+    ],
     citizenshipStatus: {
       isPermanentResident: false,
       citizenshipType: "Work Authorization",
@@ -103,14 +139,32 @@ const users = [
       cellPhone: "789-012-3456",
       workPhone: "890-123-4567",
     },
+    reference: {
+      firstName: "Jennifer",
+      lastName: "Smith",
+      middleName: "",
+      phone: "789-012-3456",
+      email: "jennifer.smith@example.com",
+      relationship: "Supervisor",
+    },
+    emergencyContacts: [
+      {
+        firstName: "Laura",
+        lastName: "Brown",
+        middleName: "",
+        phone: "890-123-4567",
+        email: "laura.brown@example.com",
+        relationship: "Mother",
+      },
+    ],
     citizenshipStatus: {
       isPermanentResident: true,
       citizenshipType: "Citizen",
     },
     onboardingStatus: "Rejected",
-    onboardingFeedback: "Invalid Formate.",
+    onboardingFeedback: "Invalid Format.",
   },
-  // onboarding opt recipt pending
+  // onboarding opt receipt pending
   {
     username: "eva_martin",
     password: bcrypt.hashSync("123456", 10),
@@ -133,6 +187,24 @@ const users = [
       cellPhone: "456-789-0124",
       workPhone: "567-890-1235",
     },
+    reference: {
+      firstName: "Tom",
+      lastName: "Harris",
+      middleName: "",
+      phone: "901-234-5678",
+      email: "tom.harris@example.com",
+      relationship: "Colleague",
+    },
+    emergencyContacts: [
+      {
+        firstName: "Nancy",
+        lastName: "Lee",
+        middleName: "",
+        phone: "012-345-6789",
+        email: "nancy.lee@example.com",
+        relationship: "Sister",
+      },
+    ],
     citizenshipStatus: {
       isPermanentResident: false,
       citizenshipType: "Work Authorization",
@@ -164,7 +236,7 @@ const users = [
       },
     },
   },
-  // onboarding opt recipt rejected
+  // onboarding opt receipt rejected
   {
     username: "bob_williams",
     password: bcrypt.hashSync("123456", 10),
@@ -187,6 +259,24 @@ const users = [
       cellPhone: "456-789-0123",
       workPhone: "567-890-1234",
     },
+    reference: {
+      firstName: "Anna",
+      lastName: "Taylor",
+      middleName: "",
+      phone: "678-901-2345",
+      email: "anna.taylor@example.com",
+      relationship: "Mentor",
+    },
+    emergencyContacts: [
+      {
+        firstName: "Paul",
+        lastName: "Martin",
+        middleName: "",
+        phone: "789-012-3456",
+        email: "paul.martin@example.com",
+        relationship: "Brother",
+      },
+    ],
     citizenshipStatus: {
       isPermanentResident: false,
       citizenshipType: "Work Authorization",
@@ -242,6 +332,24 @@ const users = [
       cellPhone: "987-654-3210",
       workPhone: "876-543-2109",
     },
+    reference: {
+      firstName: "Karen",
+      lastName: "Miller",
+      middleName: "",
+      phone: "890-123-4567",
+      email: "karen.miller@example.com",
+      relationship: "Supervisor",
+    },
+    emergencyContacts: [
+      {
+        firstName: "Steve",
+        lastName: "Williams",
+        middleName: "",
+        phone: "901-234-5678",
+        email: "steve.williams@example.com",
+        relationship: "Brother",
+      },
+    ],
     citizenshipStatus: {
       isPermanentResident: false,
       citizenshipType: "Work Authorization",
@@ -269,6 +377,147 @@ const users = [
         i20: {
           file: null,
           status: "Pending",
+        },
+      },
+    },
+  },
+  // visa i983 rejected
+  {
+    username: "john_doe",
+    password: bcrypt.hashSync("123456", 10),
+    email: "john.doe@example.com",
+    role: "employee",
+    personalInfo: {
+      firstName: "John",
+      lastName: "Doe",
+      dateOfBirth: new Date("1992-03-25"),
+      gender: "male",
+    },
+    address: {
+      building: "101",
+      street: "Pine St",
+      city: "New York",
+      state: "NY",
+      zip: "10001",
+    },
+    contactInfo: {
+      cellPhone: "321-654-9870",
+      workPhone: "432-765-0981",
+    },
+    reference: {
+      firstName: "Alice",
+      lastName: "Johnson",
+      middleName: "",
+      phone: "567-890-1234",
+      email: "alice.johnson@example.com",
+      relationship: "Colleague",
+    },
+    emergencyContacts: [
+      {
+        firstName: "Mary",
+        lastName: "Doe",
+        middleName: "",
+        phone: "678-901-2345",
+        email: "mary.doe@example.com",
+        relationship: "Wife",
+      },
+    ],
+    citizenshipStatus: {
+      isPermanentResident: false,
+      citizenshipType: "Work Authorization",
+      workAuthorizationType: "F1(CPT/OPT)",
+      visaTitle: "Software Developer",
+      startDate: new Date("2022-07-01"),
+      endDate: new Date("2025-06-30"),
+    },
+    onboardingStatus: "Approved",
+    visaStatus: {
+      currentDocument: "I-983",
+      documents: {
+        optReceipt: {
+          file: "opt_receipt_john_doe.pdf",
+          status: "Approved",
+        },
+        optEAD: {
+          file: "opt_receipt_john_doe.pdf",
+          status: "Approved",
+        },
+        i983: {
+          file: "i983_john_doe.pdf",
+          status: "Rejected",
+          feedback: "Invalid Info",
+        },
+      },
+    },
+  },
+  // visa all approved
+  {
+    username: "linda_smith",
+    password: bcrypt.hashSync("123456", 10),
+    email: "linda.smith@example.com",
+    role: "employee",
+    personalInfo: {
+      firstName: "Linda",
+      lastName: "Smith",
+      dateOfBirth: new Date("1980-10-20"),
+      gender: "female",
+    },
+    address: {
+      building: "789",
+      street: "Oak St",
+      city: "Springfield",
+      state: "IL",
+      zip: "62704",
+    },
+    contactInfo: {
+      cellPhone: "654-321-9876",
+      workPhone: "765-432-1098",
+    },
+    citizenshipStatus: {
+      isPermanentResident: false,
+      citizenshipType: "Work Authorization",
+      workAuthorizationType: "F1(CPT/OPT)",
+      visaTitle: "Software Developer",
+      startDate: new Date("2022-07-01"),
+      endDate: new Date("2025-06-30"),
+    },
+    onboardingStatus: "Approved",
+    reference: {
+      firstName: "Mark",
+      lastName: "Davis",
+      middleName: "",
+      phone: "789-012-3456",
+      email: "mark.davis@example.com",
+      relationship: "Former Manager",
+    },
+    emergencyContacts: [
+      {
+        firstName: "John",
+        lastName: "Smith",
+        middleName: "",
+        phone: "890-123-4567",
+        email: "john.smith@example.com",
+        relationship: "Husband",
+      },
+    ],
+    visaStatus: {
+      currentDocument: "I-983",
+      documents: {
+        optReceipt: {
+          file: "opt_receipt_linda_smith.pdf",
+          status: "Approved",
+        },
+        optEAD: {
+          file: "opt_ead_linda_smith.pdf",
+          status: "Approved",
+        },
+        i983: {
+          file: "i983_linda_smith.pdf",
+          status: "Approved",
+        },
+        i20: {
+          file: "i20_linda_smith.pdf",
+          status: "Approved",
         },
       },
     },
