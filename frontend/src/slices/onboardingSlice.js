@@ -2,7 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = localStorage.getItem("onboarding")
   ? JSON.parse(localStorage.getItem("onboarding"))
-  : { sortOption: "Pending" };
+  : {
+      sortOption: "Pending",
+      username: "",
+      onboardingStatus: "",
+    };
 
 const onboardingSlice = createSlice({
   name: "onboarding",
@@ -15,7 +19,5 @@ const onboardingSlice = createSlice({
   },
 });
 
-export const {
-  setSortOption,
-} = onboardingSlice.actions;
+export const { setSortOption } = onboardingSlice.actions;
 export default onboardingSlice.reducer;

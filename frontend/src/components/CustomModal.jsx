@@ -1,24 +1,27 @@
 import { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Spinner } from "react-bootstrap";
 
-const CustomModal = ({ show, handleClose, handleSave }) => {
+const CustomModal = ({ show, handleClose, handleSave, isUpdatingStatus }) => {
   const [status, setStatus] = useState("");
   const [feedback, setFeedback] = useState("");
   const [feedbackRequired, setFeedbackRequired] = useState(false);
+  
   const handleStatusChange = (newStatus) => {
-    setStatus(newStatus);
     if (newStatus === "Rejected") {
       setFeedbackRequired(true);
-    } else {
+      setStatus(newStatus);
+    } else if (newStatus === "Approved") {
       setFeedback("");
       setFeedbackRequired(false);
+      setStatus(newStatus);
     }
   };
   const handleSubmit = () => {
     if (status === "Rejected" && !feedback) {
       return;
     }
-    handleSave(status, feedback);
+    if (status === "Rejected" || status === "Approved")
+      handleSave(status, feedback);
   };
 
   return (
@@ -34,6 +37,7 @@ const CustomModal = ({ show, handleClose, handleSave }) => {
             value={status}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
+            <option>Update the status</option>
             <option value="Approved">Approved</option>
             <option value="Rejected">Rejected</option>
           </Form.Control>
@@ -60,8 +64,16 @@ const CustomModal = ({ show, handleClose, handleSave }) => {
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSubmit}>
-          Save Changes
+        <Button
+          variant="primary"
+          disabled={isUpdatingStatus}
+          onClick={handleSubmit}
+        >
+          {isUpdatingStatus ? (
+            <Spinner animation="border" size="sm" />
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </Modal.Footer>
     </Modal>

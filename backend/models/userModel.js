@@ -91,27 +91,44 @@ const userSchema = new mongoose.Schema(
     visaStatus: {
       currentDocument: {
         type: String,
+        default: "OPT Receipt",
         enum: ["OPT Receipt", "OPT EAD", "I-983", "I-20"],
       },
       documents: {
         optReceipt: {
           file: { type: String, default: "" },
-          status: { type: String, enum: ["Pending", "Approved", "Rejected"] },
+          status: {
+            type: String,
+            default: "Pending",
+            enum: ["Pending", "Approved", "Rejected"],
+          },
           feedback: String,
         },
         optEAD: {
           file: { type: String, default: "" },
-          status: { type: String, enum: ["Pending", "Approved", "Rejected"] },
+          status: {
+            type: String,
+            default: "Pending",
+            enum: ["Pending", "Approved", "Rejected"],
+          },
           feedback: String,
         },
         i983: {
           file: { type: String, default: "" },
-          status: { type: String, enum: ["Pending", "Approved", "Rejected"] },
+          status: {
+            type: String,
+            default: "Pending",
+            enum: ["Pending", "Approved", "Rejected"],
+          },
           feedback: String,
         },
         i20: {
           file: { type: String, default: "" },
-          status: { type: String, enum: ["Pending", "Approved", "Rejected"] },
+          status: {
+            type: String,
+            default: "Pending",
+            enum: ["Pending", "Approved", "Rejected"],
+          },
           feedback: String,
         },
       },

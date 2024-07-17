@@ -1,4 +1,4 @@
-import { USERS_URL } from "../constants";
+import { USERS_URL, UPLOAD_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 export const userApiSlice = apiSlice.injectEndpoints({
@@ -25,6 +25,27 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["User"],
     }),
+    uploadProfile: builder.mutation({
+      query: (data) => ({
+        url: `${UPLOAD_URL}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateInfo: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/info`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    verifyToken: builder.mutation({
+      query: (token) => ({
+        url: `${USERS_URL}/verify-token`,
+        method: "POST",
+        body: token,
+      }),
+    }),
     register: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/register`,
@@ -38,9 +59,24 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "POST",
       }),
     }),
-    updatePassword: builder.mutation({
+    getVisaStatusById: builder.query({
+      query: (id) => ({
+        url: `${USERS_URL}/visa-status/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+    updateVisaStatus: builder.mutation({
       query: (data) => ({
-        url: `${USERS_URL}/forgot-password`,
+        url: `${USERS_URL}/visa-status/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    uploadVisaDocument: builder.mutation({
+      query: (data) => ({
+        url: `${UPLOAD_URL}`,
         method: "POST",
         body: data,
       }),
@@ -52,7 +88,13 @@ export const {
   useLoginMutation,
   usePostOnboardingMutation,
   useGetOnboardingQuery,
+  useUploadProfileMutation,
+  useUpdateInfoMutation,
   useLogoutMutation,
   useRegisterMutation,
   useUpdatePasswordMutation,
+  useGetVisaStatusByIdQuery,
+  useUpdateVisaStatusMutation,
+  useVerifyTokenMutation,
+  useUploadVisaDocumentMutation,
 } = userApiSlice;

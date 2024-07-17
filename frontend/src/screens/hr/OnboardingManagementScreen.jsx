@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useGetOnboardingApplicationsQuery } from "../../slices/onboardingApiSlice";
-import "./index.css";
-import { setSortOption } from "../../slices/onboardingSlice"; // Import your Redux action for setting sort option
+import { useGetOnboardingApplicationsQuery } from "../../slices/hrApiSlice";
+
+import { setSortOption } from "../../slices/onboardingSlice";
 import {
   Row,
   Col,
@@ -12,9 +12,9 @@ import {
   DropdownButton,
   Table,
   Button,
-  ButtonGroup,
 } from "react-bootstrap";
 import Loader from "../../components/Loader";
+
 const OnboardingManagementScreen = () => {
   const sortOption =
     useSelector((state) => state.onboarding.sortOption) || "Pending";
@@ -35,13 +35,12 @@ const OnboardingManagementScreen = () => {
   }, [sortOption, refetch]);
 
   const handleSortChange = (option) => {
-    dispatch(setSortOption(option)); // Dispatch action to set sort option in Redux state
+    dispatch(setSortOption(option));
   };
 
-  const handleViewApplication = (application) => {
-    console.log(application);
-
-    navigate(`/test/${application._id}`);
+  const handleViewApplication = (username) => {
+    const url = `/onboarding/${username}`;
+    window.open(url, "_blank");
   };
 
   if (error) {
@@ -98,7 +97,9 @@ const OnboardingManagementScreen = () => {
                         <Button
                           variant="secondary"
                           size="sm"
-                          onClick={() => handleViewApplication(application)}
+                          onClick={() =>
+                            handleViewApplication(application.username)
+                          }
                         >
                           View Application
                         </Button>
