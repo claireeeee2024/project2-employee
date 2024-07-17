@@ -159,7 +159,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
 // @access  Public
 export const postOnboarding = asyncHandler(async (req, res) => {
   const { username, formData } = req.body;
-
+  console.log(username);
   const user = await User.findOneAndUpdate(
     { username },
     {
@@ -324,9 +324,9 @@ export const getVisaStatusById = asyncHandler(async (req, res) => {
 export const updateVisaStatus = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
-    const { documentType, file } = req.body; // Assuming file is a string (file path or URL)
+    const { documentType, filePath } = req.body; // Assuming file is a string (file path or URL)
 
-    if (!documentType || !file) {
+    if (!documentType || !filePath) {
       res.status(400);
       throw new Error("Document type and file are required");
     }
@@ -341,7 +341,7 @@ export const updateVisaStatus = asyncHandler(async (req, res) => {
     const document = mapDocumentType(documentType);
 
     const updateData = {
-      [`visaStatus.documents.${document}.file`]: file,
+      [`visaStatus.documents.${document}.file`]: filePath,
       [`visaStatus.documents.${document}.status`]: "Pending",
       "visaStatus.currentDocument": documentType,
     };
@@ -365,9 +365,7 @@ export const updateVisaStatus = asyncHandler(async (req, res) => {
 // @route   GET /api/hr/citizenship-status/:id
 // @access  Private/Admin
 export const getCitizenshipStatusById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select(
-    "citizenshipStatus"
-  );
+  const user = await User.findById(req.params.id).select("citizenshipStatus");
 
   if (!user) {
     res.status(404);

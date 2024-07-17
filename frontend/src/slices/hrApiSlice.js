@@ -55,6 +55,13 @@ export const hrApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Registration"],
     }),
+    sendNotification: builder.mutation({
+      query: (data) => ({
+        url: `${HR_URL}/send-notification`,
+        method: "POST",
+        body: data,
+      }),
+    }),
     getRegistrationHistory: builder.query({
       query: () => ({
         url: `${HR_URL}/registration-history`,
@@ -92,4 +99,5 @@ export const {
   useGetRegistrationHistoryQuery,
   useGetOnboardingApplicationsQuery,
   useUpdateOnboardingStatusMutation,
+  useSendNotificationMutation,
 } = hrApiSlice;

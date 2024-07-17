@@ -34,7 +34,23 @@ function fileFilter(req, file, cb) {
 
 // const upload = multer({ storage, fileFilter });
 const upload = multer({ storage });
-// const uploadSingleImage = upload.single("profilePicture");
+const uploadSingle = upload.single("file");
+
+
+router.post("/single", (req, res) => {
+  uploadSingle(req, res, (err) => {
+    if (err) {
+      console.log(err);
+      res.status(400).json({ message: err.message });
+    } else {
+      console.log(req.file);
+      console.log({file: `files/${req.file.filename}`})
+      res.json({ file: `files/${req.file.filename}` });
+    }
+  });
+});
+
+
 
 router.post(
   "/",
@@ -55,18 +71,8 @@ router.post(
         : null,
     });
 
-    // uploadSingleImage(req, res, function (err) {
-    //   if (err) {
-    //     console.error("Upload error:", err.message);
-    //     return res.status(400).send({ message: err.message });
-    //   }
-    //   console.log("File uploaded:", req.file.path);
-    //   res.status(200).json({
-    //     message: "Image uploaded successfully",
-    //     path: `/${req.file.path}`,
-    //   });
-    // });
   }
 );
+
 
 export default router;

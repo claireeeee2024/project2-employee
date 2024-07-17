@@ -30,7 +30,10 @@ app.use("/api/users", userRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/hr", hrRoutes);
 
+
 const __dirname = path.resolve();
+
+app.use('/files', express.static(path.join(__dirname, 'files')));
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/build")));
   console.log(path.resolve(__dirname, "frontend", "build", "index.html"));

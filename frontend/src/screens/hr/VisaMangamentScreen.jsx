@@ -1,18 +1,31 @@
 import React, { useState, useMemo } from "react";
-import { Container, Form, Alert, Tabs, Tab, Button } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Alert,
+  Tabs,
+  Tab,
+  Modal,
+  Button,
+} from "react-bootstrap";
 import {
   useGetAllVisaStatusQuery,
   useGetVisaStatusInProgressQuery,
+  useSendNotificationMutation,
 } from "../../slices/hrApiSlice";
 import { SummaryList } from "../../components/SummaryList";
 import Loader from "../../components/Loader";
 import VisaActionModal from "../../components/VisaActionModal";
 import { DocumentPreviewModal } from "../../components/DocumentPreviewModal";
+import { BASE_URL } from "../../constants";
 
 const VisaManagementScreen = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showActionModal, setShowActionModal] = useState(false);
+  const [sendNotificationMutation] = useSendNotificationMutation();
   //   const [showPreviewModal, setShowPreviewModal] = useState(false);
   //   const [previewDocument, setPreviewDocument] = useState(null);
 
@@ -27,9 +40,19 @@ const VisaManagementScreen = () => {
     isError: isErrorInProgress,
   } = useGetVisaStatusInProgressQuery();
 
-  const handleSendNotification = (employeeId) => {
-    console.log("send notification to employee", employeeId);
-    // TODO: send notification by email
+  const handleSendNotification = async (employeeId, nextStep) => {
+    try {
+      console.log("send notification to employee", employeeId);
+      const response = await sendNotificationMutation({
+        employeeId,
+        nextStep,
+      });
+      console.log(employeeId, nextStep, response);
+
+      alert(response.data.message);
+    } catch (error) {
+      alert("Failed to send notification");
+    }
   };
 
   //   const handlePreviewDocument = (document) => {
@@ -97,7 +120,7 @@ const VisaManagementScreen = () => {
       return (
         <Button
           variant="secondary"
-          onClick={() => handleSendNotification(employee._id)}
+          onClick={() => handleSendNotification(employee._id, nextStep)}
         >
           Send Notification
         </Button>
@@ -133,18 +156,26 @@ const VisaManagementScreen = () => {
       case "OPT Receipt":
         return employee.visaStatus.documents.optReceipt.status === "Pending"
           ? "Waiting for HR approval"
+          : employee.visaStatus.documents.optReceipt.status === "Rejected"
+          ? "Upload New OPT Receipt"
           : "Upload OPT EAD";
       case "OPT EAD":
         return employee.visaStatus.documents.optEAD.status === "Pending"
           ? "Waiting for HR approval"
+          : employee.visaStatus.documents.optEAD.status === "Rejected"
+          ? "Upload New OPT EAD"
           : "Upload I-983";
       case "I-983":
         return employee.visaStatus.documents.i983.status === "Pending"
           ? "Waiting for HR approval"
+          : employee.visaStatus.documents.i983.status === "Rejected"
+          ? "Upload New I-983"
           : "Upload I-20";
       case "I-20":
         return employee.visaStatus.documents.i20.status === "Pending"
           ? "Waiting for HR approval"
+          : employee.visaStatus.documents.i20.status === "Rejected"
+          ? "Upload New I-20"
           : "All documents approved";
       default:
         return "Unknown status";
@@ -154,11 +185,16 @@ const VisaManagementScreen = () => {
   const getDocumentLinks = (employee) => {
     // Logic to create document download/preview links
     const documents = employee.visaStatus.documents;
+    console.log(documents);
     return Object.entries(documents)
       .filter(([_, doc]) => doc.file)
       .map(([docName, doc]) => (
         <div key={docName}>
-          <a href={doc.file} target="_blank" rel="noopener noreferrer">
+          <a
+            href={BASE_URL + "/" + doc.file}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {docName}
           </a>
           {doc.status === "Approved" && " (Approved)"}

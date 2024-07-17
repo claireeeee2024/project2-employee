@@ -6,6 +6,8 @@ import {
   useUpdateVisaStatusMutation,
   useUploadVisaDocumentMutation,
 } from "../slices/usersApiSlice";
+import { mapDocumentType } from "../utils/validation";
+import { BASE_URL } from "../constants";
 
 export const EmployeeVisaManagement = () => {
   const [file, setFile] = useState(null);
@@ -18,8 +20,9 @@ export const EmployeeVisaManagement = () => {
 
   const [updateVisaStatus, { isLoading: isUpdating }] =
     useUpdateVisaStatusMutation();
-  
-  const [uploadVisaDocument, { isLoading: isUploading, error: uploadError }] = useUploadVisaDocumentMutation();
+
+  const [uploadVisaDocument, { isLoading: isUploading, error: uploadError }] =
+    useUploadVisaDocumentMutation();
 
   const [currentStep, setCurrentStep] = useState("");
   const [message, setMessage] = useState("");
@@ -109,10 +112,11 @@ export const EmployeeVisaManagement = () => {
     try {
       const uploadResult = await uploadVisaDocument(formData).unwrap();
       // update the visa status with the file path
+      console.log("uploadResult", uploadResult);
       await updateVisaStatus({
         id: userInfo._id,
         documentType: currentStep,
-        filePath: uploadResult.filePath,
+        filePath: uploadResult.file,
       }).unwrap();
 
       setFile(null);
@@ -140,7 +144,11 @@ export const EmployeeVisaManagement = () => {
           <ListGroup.Item key={docType}>
             {mapDocumentType(docType)}:{" "}
             {doc.file ? (
-              <a href={doc.file} target="_blank" rel="noopener noreferrer">
+              <a
+                href={BASE_URL + "/" + doc.file}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 View Document
               </a>
             ) : (
@@ -156,20 +164,21 @@ export const EmployeeVisaManagement = () => {
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <Alert variant="danger">Error loading visa status</Alert>;
-  if (visaStatus?.citizenshipStatus?.workAuthorizationType !== 'F1(CPT/OPT)') {
-    return <Alert variant="info">This page is only applicable for F1(CPT/OPT) visa holders.</Alert>;
+  if (visaStatus?.citizenshipStatus?.workAuthorizationType !== "F1(CPT/OPT)") {
+    return (
+      <Alert variant="info">
+        This page is only applicable for F1(CPT/OPT) visa holders.
+      </Alert>
+    );
   }
 
   return (
     <Container>
       <h1>My Visa Status</h1>
-      <Alert variant="info">{message}</Alert>
+      {message && message !== "" && <Alert variant="info">{message}</Alert>}
 
       {isAllDocumentsApproved() ? (
-        <>
-          <Alert variant="success">All documents have been approved.</Alert>
-          {renderDocumentList()}
-        </>
+        <>{renderDocumentList()}</>
       ) : (
         <>
           {["OPT Receipt", "OPT EAD", "I-983", "I-20"].includes(
@@ -196,10 +205,10 @@ export const EmployeeVisaManagement = () => {
 
           {currentStep === "I-983" && (
             <div className="mt-3">
-              <Button href="/path-to-empty-i983.pdf" download className="me-2">
+              <Button href="I-983.pdf" download className="me-2">
                 Download Empty I-983 Template
               </Button>
-              <Button href="/path-to-sample-i983.pdf" download>
+              <Button href="Sample_I983.pdf" download>
                 Download Sample I-983 Template
               </Button>
             </div>
