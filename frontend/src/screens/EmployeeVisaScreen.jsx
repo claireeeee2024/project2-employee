@@ -200,10 +200,10 @@ export const EmployeeVisaManagement = () => {
 
           {currentStep === "I-983" && (
             <div className="mt-3">
-              <Button href="/path-to-empty-i983.pdf" download className="me-2">
+              <Button href="I-983.pdf" download className="me-2">
                 Download Empty I-983 Template
               </Button>
-              <Button href="/path-to-sample-i983.pdf" download>
+              <Button href="Sample_I983.pdf" download>
                 Download Sample I-983 Template
               </Button>
             </div>
