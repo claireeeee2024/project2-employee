@@ -17,16 +17,20 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 const OnboardingScreen = () => {
   const [postOnboarding] = usePostOnboardingMutation();
+  const [uploadProfile] = useUploadProfileMutation();
   const { userInfo } = useSelector((state) => state.auth);
   const username = useParams().username || userInfo.username;
 
   const { data, isLoading, error, refetch } = useGetOnboardingQuery({
     username: username,
   });
-  const onboardingStatus =
-    userInfo.role === "hr" && data
-      ? data.onboardingStatus
-      : userInfo.onboardingStatus;
+  //   const onboardingStatus =
+  //     userInfo.role === "hr" && data
+  //       ? data.onboardingStatus
+  //       : userInfo.onboardingStatus;
+  const onboardingStatus = data
+    ? data.onboardingStatus
+    : userInfo.onboardingStatus;
 
   const navigate = useNavigate();
 
@@ -104,11 +108,12 @@ const OnboardingScreen = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       const onboardingStatus = data.onboardingStatus;
       dispatch(
         setCredentials({ ...userInfo, onboardingStatus: onboardingStatus })
       );
-      if (onboardingStatus === "Pending") {
+      if (onboardingStatus === "Pending" || onboardingStatus === "Rejected") {
         setFormData({
           firstName: data.personalInfo.firstName,
           lastName: data.personalInfo.lastName,
@@ -126,15 +131,21 @@ const OnboardingScreen = () => {
           workPhone: data.contactInfo.workPhone,
           email: data.email,
           ssn: data.personalInfo.ssn,
-          dateOfBirth: data.personalInfo.dateOfBirth,
+          dateOfBirth: data.personalInfo.dateOfBirth
+            ? data.personalInfo.dateOfBirth.split("T")[0]
+            : "",
           gender: data.personalInfo.gender,
           permanentResident: data.citizenshipStatus.isPermanentResident,
           citizenshipType: data.citizenshipStatus.citizenshipType,
           workAuthorization: data.citizenshipStatus.workAuthorizationType,
-          optReceipt: data.visaStatus.documents.optReceipt.file,
+          optReceipt: data.optReceipt,
           visaTitle: data.citizenshipStatus.visaTitle,
-          startDate: data.citizenshipStatus.startDate,
-          endDate: data.citizenshipStatus.endDate,
+          startDate: data.citizenshipStatus.startDate
+            ? data.citizenshipStatus.startDate.split("T")[0]
+            : "",
+          endDate: data.citizenshipStatus.endDate
+            ? data.citizenshipStatus.endDate.split("T")[0]
+            : "",
           reference: {
             firstName: data.reference.firstName,
             lastName: data.reference.lastName,
@@ -200,43 +211,24 @@ const OnboardingScreen = () => {
     });
   };
 
-  const handlePictureChange = (e) => {
-    setProfilePicture(e.target.files[0]);
-  };
-  const handlePictureUpload = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("profilePicture", profilePicture);
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/api/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(res);
-
-      // setFilePath(res.data.filePath);
-      // setFileName(res.data.fileName);
-    } catch (err) {
-      console.error("Error uploading file:", err);
-    }
-    // try {
-    //   const res = await uploadProfile(profilePicture).unwrap();
-    //   console.log(res);
-    //   //   setFilePath(res.data.filePath);
-    //   //   setFileName(res.data.fileName);
-    // } catch (err) {
-    //   console.error("Error uploading file:", err);
-    // }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await postOnboarding({ username, formData }).unwrap();
+    const data = new FormData();
+    data.append("profilePicture", formData.profilePicture);
+    data.append("optReceipt", formData.optReceipt);
+    const uploadRes = await uploadProfile(data).unwrap();
+    console.log(uploadRes);
+    const updatedForm = {
+      ...formData,
+      profilePicture: uploadRes.profilePicture,
+      optReceipt: uploadRes.optReceipt,
+    };
+    console.log(updatedForm);
+
+    const res = await postOnboarding({
+      username,
+      formData: updatedForm,
+    }).unwrap();
     dispatch(setCredentials({ ...res }));
     console.log(res);
     // handle form submission
@@ -300,8 +292,6 @@ const OnboardingScreen = () => {
         handleEmergencyContactChange={handleEmergencyContactChange}
         addEmergencyContact={addEmergencyContact}
         handleFileChange={handleFileChange}
-        handlePictureUpload={handlePictureUpload}
-        handlePictureChange={handlePictureChange}
         handleSubmit={handleSubmit}
       />
     ) : onboardingStatus === "Pending" ? (
@@ -321,8 +311,6 @@ const OnboardingScreen = () => {
           handleEmergencyContactChange={handleEmergencyContactChange}
           addEmergencyContact={addEmergencyContact}
           handleFileChange={handleFileChange}
-          handlePictureUpload={handlePictureUpload}
-          handlePictureChange={handlePictureChange}
           handleSubmit={handleSubmit}
         />
       </Container>

@@ -31,22 +31,36 @@ function fileFilter(req, file, cb) {
   }
 }
 
-const upload = multer({ storage, fileFilter });
-const uploadSingleImage = upload.single("profilePicture");
+// const upload = multer({ storage, fileFilter });
+const upload = multer({ storage });
+// const uploadSingleImage = upload.single("profilePicture");
 
-router.post("/", (req, res) => {
-  console.log("start uploading");
-  uploadSingleImage(req, res, function (err) {
-    if (err) {
-      console.error("Upload error:", err.message);
-      return res.status(400).send({ message: err.message });
-    }
-    console.log("File uploaded:", req.file.path);
-    res.status(200).send({
-      message: "Image uploaded successfully",
-      image: `/${req.file.path}`,
+router.post(
+  "/",
+  upload.fields([
+    { name: "profilePicture", maxCount: 1 },
+    { name: "optReceipt", maxCount: 1 },
+  ]),
+  (req, res) => {
+    console.log("start uploading");
+    const files = req.files;
+    res.json({
+      profilePicture: `/files/${files.profilePicture[0].filename}`,
+      optReceipt: `/files/${files.optReceipt[0].filename}`,
     });
-  });
-});
+
+    // uploadSingleImage(req, res, function (err) {
+    //   if (err) {
+    //     console.error("Upload error:", err.message);
+    //     return res.status(400).send({ message: err.message });
+    //   }
+    //   console.log("File uploaded:", req.file.path);
+    //   res.status(200).json({
+    //     message: "Image uploaded successfully",
+    //     path: `/${req.file.path}`,
+    //   });
+    // });
+  }
+);
 
 export default router;

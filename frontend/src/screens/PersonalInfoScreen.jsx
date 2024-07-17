@@ -16,10 +16,9 @@ const PersonalInfoScreen = () => {
   const { data, isLoading, error } = useGetOnboardingQuery({
     username: username,
   });
-
+  console.log(data);
   const [updateInfo] = useUpdateInfoMutation();
-  const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
+  const [initialFormData, setInitialFormData] = useState({
     firstName: "",
     lastName: "",
     middleName: "",
@@ -59,11 +58,13 @@ const PersonalInfoScreen = () => {
       driversLicense: null,
       workAuthorization: null,
     },
+    createdAt: null,
+    updatedAt: null,
   });
-
-  const [info, setInfo] = useState(formData);
+  const [formData, setFormData] = useState(initialFormData);
+  const [info, setInfo] = useState(initialFormData);
   const [editMode, setEditMode] = useState(false);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -80,7 +81,7 @@ const PersonalInfoScreen = () => {
   const handleEmergencyContactChange = (index, e) => {
     const { name, value } = e.target;
     const updatedContacts = [...formData.emergencyContacts];
-    updatedContacts[index][name] = value;
+    updatedContacts[index] = { ...updatedContacts[index], [name]: value };
     setFormData({ ...formData, emergencyContacts: updatedContacts });
   };
 
@@ -91,25 +92,16 @@ const PersonalInfoScreen = () => {
     });
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFormData({
-      ...formData,
-      documents: { ...formData.documents, [name]: files[0] },
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await updateInfo({ username, formData }).unwrap();
     setInfo(formData);
     setEditMode(false);
-    console.log(res);
   };
 
   useEffect(() => {
     if (data) {
-      setFormData({
+      const updatedData = {
         firstName: data.personalInfo.firstName,
         lastName: data.personalInfo.lastName,
         middleName: data.personalInfo.middleName,
@@ -126,15 +118,21 @@ const PersonalInfoScreen = () => {
         workPhone: data.contactInfo.workPhone,
         email: data.email,
         ssn: data.personalInfo.ssn,
-        dateOfBirth: data.personalInfo.dateOfBirth,
+        dateOfBirth: data.personalInfo.dateOfBirth
+          ? data.personalInfo.dateOfBirth.split("T")[0]
+          : "",
         gender: data.personalInfo.gender,
         permanentResident: data.citizenshipStatus.isPermanentResident,
         citizenshipType: data.citizenshipStatus.citizenshipType,
         workAuthorization: data.citizenshipStatus.workAuthorizationType,
         optReceipt: data.visaStatus.documents.optReceipt.file,
         visaTitle: data.citizenshipStatus.visaTitle,
-        startDate: data.citizenshipStatus.startDate,
-        endDate: data.citizenshipStatus.endDate,
+        startDate: data.citizenshipStatus.startDate
+          ? data.citizenshipStatus.startDate.split("T")[0]
+          : "",
+        endDate: data.citizenshipStatus.endDate
+          ? data.citizenshipStatus.endDate.split("T")[0]
+          : "",
         reference: {
           firstName: data.reference.firstName,
           lastName: data.reference.lastName,
@@ -149,10 +147,14 @@ const PersonalInfoScreen = () => {
           driversLicense: data.documents.driverLicense,
           workAuthorization: data.documents.workAuthorization,
         },
-      });
-      setInfo(formData);
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      };
+      setInfo(updatedData);
+      setFormData(updatedData);
     }
   }, [data]);
+
   const handleEdit = () => {
     setEditMode(true);
   };
@@ -170,7 +172,7 @@ const PersonalInfoScreen = () => {
   return (
     <>
       {editMode ? (
-        <Form onSubmit={handleSubmit}>
+        <div>
           <PersonalInfoField
             handleChange={handleChange}
             handleAddressChange={handleAddressChange}
@@ -181,11 +183,11 @@ const PersonalInfoScreen = () => {
             email={email}
           />
           <Button onClick={handleCancel}>Cancel</Button>
-          <Button type="submit">Save</Button>
-        </Form>
+          <Button onClick={handleSubmit}>Save</Button>
+        </div>
       ) : (
         <div>
-          <PersonalInfoViewField data={data} />
+          <PersonalInfoViewField data={info} />
           <Button onClick={handleEdit}>Edit</Button>
         </div>
       )}

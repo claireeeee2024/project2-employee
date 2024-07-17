@@ -154,8 +154,6 @@ export const logoutUser = asyncHandler(async (req, res) => {
   res.status(200).send({ message: "Logged out successfully" });
 });
 
-
-
 // @desc    Onboarding
 // @route   POST /api/users/onboarding
 // @access  Public
@@ -224,6 +222,8 @@ export const postOnboarding = asyncHandler(async (req, res) => {
     _id: user._id,
     username: user.username,
     onboarding: user.onboardingStatus,
+    email: user.email,
+    role: user.role,
   });
 });
 
@@ -284,6 +284,8 @@ export const updateInfo = asyncHandler(async (req, res) => {
     _id: user._id,
     username: user.username,
     onboarding: user.onboardingStatus,
+    email: user.email,
+    role: user.role,
   });
 });
 

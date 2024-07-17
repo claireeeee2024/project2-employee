@@ -76,7 +76,7 @@ const NameField = ({
             Email<span style={{ color: "red" }}>*</span>
           </strong>
         </Form.Label>
-        <Form.Control type="email" name="email" value={email} />
+        <Form.Control type="email" name="email" value={email} readOnly />
       </Form.Group>
       <Form.Group controlId="ssn">
         <Form.Label>
@@ -222,7 +222,16 @@ const ContactInfoField = ({ handleChange, formData }) => {
 const Employment = ({ handleChange, formData }) => {
   return (
     <>
-      <h2>visa title</h2>
+      <h2>Employment</h2>
+      <Form.Group controlId="workAuthorization">
+        <Form.Label>Visa Title</Form.Label>
+        <Form.Control
+          type="text"
+          name="workAuthorization"
+          value={formData.workAuthorization}
+          onChange={handleChange}
+        />
+      </Form.Group>
       <Form.Group controlId="startDate">
         <Form.Label>Start Date</Form.Label>
         <Form.Control

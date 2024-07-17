@@ -1,7 +1,9 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-
+import { BASE_URL } from "../constants";
 const PersonalInfoViewField = ({ data }) => {
+  if (!data) return <div>loading</div>;
+  console.log(data);
   const {
     personalInfo,
     address,
@@ -27,31 +29,39 @@ const PersonalInfoViewField = ({ data }) => {
           <h2>Personal Information</h2>
           <Row>
             <Col>
-              <strong>First Name:</strong> {personalInfo.firstName}
+              <strong>First Name:</strong> {data.firstName}
             </Col>
             <Col>
-              <strong>Last Name:</strong> {personalInfo.lastName}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>Middle Name:</strong> {personalInfo.middleName}
-            </Col>
-            <Col>
-              <strong>Preferred Name:</strong> {personalInfo.preferredName}
+              <strong>Last Name:</strong> {data.lastName}
             </Col>
           </Row>
           <Row>
             <Col>
-              <strong>SSN:</strong> {personalInfo.ssn}
+              <strong>Middle Name:</strong> {data.middleName}
             </Col>
             <Col>
-              <strong>Date of Birth:</strong> {personalInfo.dateOfBirth}
+              <strong>Preferred Name:</strong> {data.preferredName}
             </Col>
           </Row>
           <Row>
             <Col>
-              <strong>Gender:</strong> {personalInfo.gender}
+              <strong>SSN:</strong> {data.ssn}
+            </Col>
+            <Col>
+              <strong>Date of Birth:</strong> {data.dateOfBirth.split("T")[0]}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <strong>Gender:</strong> {data.gender}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <strong>Profile Picture:</strong>{" "}
+              <a href={`${BASE_URL}${data.profilePicture}`} download>
+                profile picture
+              </a>
             </Col>
           </Row>
         </Card.Body>
@@ -87,10 +97,10 @@ const PersonalInfoViewField = ({ data }) => {
           <h2>Contact Information</h2>
           <Row>
             <Col>
-              <strong>Cell Phone:</strong> {contactInfo.cellPhone}
+              <strong>Cell Phone:</strong> {data.cellPhone}
             </Col>
             <Col>
-              <strong>Work Phone:</strong> {contactInfo.workPhone}
+              <strong>Work Phone:</strong> {data.workPhone}
             </Col>
           </Row>
         </Card.Body>
@@ -98,133 +108,30 @@ const PersonalInfoViewField = ({ data }) => {
 
       <Card className="mb-3">
         <Card.Body>
-          <h2>Citizenship Status</h2>
+          <h2>Employment</h2>
           <Row>
             <Col>
               <strong>Permanent Resident:</strong>{" "}
-              {citizenshipStatus.isPermanentResident ? "Yes" : "No"}
+              {data.permanentResident ? "Yes" : "No"}
             </Col>
             <Col>
-              <strong>Citizenship Type:</strong>{" "}
-              {citizenshipStatus.citizenshipType}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>Visa Title:</strong> {citizenshipStatus.visaTitle}
-            </Col>
-            <Col>
-              <strong>Work Authorization Type:</strong>{" "}
-              {citizenshipStatus.workAuthorizationType}
+              <strong>Citizenship Type:</strong> {data.citizenshipType}
             </Col>
           </Row>
           <Row>
             <Col>
-              <strong>Start Date:</strong> {citizenshipStatus.startDate}
+              <strong>Visa Title:</strong> {data.visaTitle}
             </Col>
             <Col>
-              <strong>End Date:</strong> {citizenshipStatus.endDate}
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-3">
-        <Card.Body>
-          <h2>Reference</h2>
-          <Row>
-            <Col>
-              <strong>First Name:</strong> {reference.firstName}
-            </Col>
-            <Col>
-              <strong>Last Name:</strong> {reference.lastName}
+              <strong>Work Authorization Type:</strong> {data.workAuthorization}
             </Col>
           </Row>
           <Row>
             <Col>
-              <strong>Middle Name:</strong> {reference.middleName}
+              <strong>Start Date:</strong> {data.startDate}
             </Col>
             <Col>
-              <strong>Phone:</strong> {reference.phone}
-            </Col>
-            <Col>
-              <strong>Email:</strong> {reference.email}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>Relationship:</strong> {reference.relationship}
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-3">
-        <Card.Body>
-          <h2>Documents</h2>
-          <Row>
-            <Col>
-              <strong>Driver's License:</strong> {documents.driverLicense}
-            </Col>
-            <Col>
-              <strong>Work Authorization:</strong> {documents.workAuthorization}
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-3">
-        <Card.Body>
-          <h2>Visa Status</h2>
-          <Row>
-            <Col>
-              <strong>Current Document:</strong> {visaStatus.currentDocument}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>OPT Receipt:</strong>{" "}
-              {visaStatus.documents.optReceipt.file}
-            </Col>
-            <Col>
-              <strong>Status:</strong> {visaStatus.documents.optReceipt.status}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong>{" "}
-              {visaStatus.documents.optReceipt.feedback}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>OPT EAD:</strong> {visaStatus.documents.optEAD.file}
-            </Col>
-            <Col>
-              <strong>Status:</strong> {visaStatus.documents.optEAD.status}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong> {visaStatus.documents.optEAD.feedback}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>I-983:</strong> {visaStatus.documents.i983.file}
-            </Col>
-            <Col>
-              <strong>Status:</strong> {visaStatus.documents.i983.status}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong> {visaStatus.documents.i983.feedback}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>I-20:</strong> {visaStatus.documents.i20.file}
-            </Col>
-            <Col>
-              <strong>Status:</strong> {visaStatus.documents.i20.status}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong> {visaStatus.documents.i20.feedback}
+              <strong>End Date:</strong> {data.endDate}
             </Col>
           </Row>
         </Card.Body>
@@ -272,17 +179,31 @@ const PersonalInfoViewField = ({ data }) => {
 
       <Card className="mb-3">
         <Card.Body>
-          <h2>Account Information</h2>
+          <h2>Documents</h2>
           <Row>
-            <Col>
-              <strong>Username:</strong> {username}
-            </Col>
-            <Col>
-              <strong>Email:</strong> {email}
-            </Col>
-            <Col>
-              <strong>Role:</strong> {role}
-            </Col>
+            {documents.driversLicense && (
+              <>
+                <Col>
+                  <strong>Driver's License:</strong>
+                  <a href={`${BASE_URL}${documents.driversLicense}`} download>
+                    driver's license
+                  </a>
+                </Col>
+              </>
+            )}
+            {documents.workAuthorization && (
+              <>
+                <Col>
+                  <strong>Work Authorization:</strong>
+                  <a
+                    href={`${BASE_URL}${documents.workAuthorization}`}
+                    download
+                  >
+                    work authorization
+                  </a>
+                </Col>
+              </>
+            )}
           </Row>
         </Card.Body>
       </Card>
