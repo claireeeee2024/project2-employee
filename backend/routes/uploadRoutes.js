@@ -6,7 +6,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "files/");
+    cb(null, "files"); 
   },
   filename(req, file, cb) {
     cb(
@@ -18,8 +18,9 @@ const storage = multer.diskStorage({
 
 function fileFilter(req, file, cb) {
   console.log("File received:", file.originalname);
-  const filetypes = /jpe?g|png|webp/;
-  const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
+  // Allow pdf, jpg, jpeg, png files
+  const filetypes = /pdf|jpe?g|png/;
+  const mimetypes = /application\/pdf|image\/jpe?g|image\/png/;
 
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = mimetypes.test(file.mimetype);
@@ -27,7 +28,7 @@ function fileFilter(req, file, cb) {
   if (extname && mimetype) {
     cb(null, true);
   } else {
-    cb(new Error("Images only!"), false);
+    cb(new Error("Only PDF, JPEG, JPG, and PNG files are allowed!"), false);
   }
 }
 

@@ -74,6 +74,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    uploadVisaDocument: builder.mutation({
+      query: (data) => ({
+        url: `${UPLOAD_URL}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -89,4 +96,5 @@ export const {
   useGetVisaStatusByIdQuery,
   useUpdateVisaStatusMutation,
   useVerifyTokenMutation,
+  useUploadVisaDocumentMutation,
 } = userApiSlice;

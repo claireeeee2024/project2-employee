@@ -64,9 +64,9 @@ const App = () => {
       <ToastContainer autoClose={2000} />
       <div className="d-flex flex-grow-1">
         {userInfo &&
-          ((userInfo.role == "employee" &&
+          ((userInfo.role === "employee" &&
             userInfo.onboardingStatus === "Approved") ||
-            userInfo.role == "hr") && <SideBar navStructure={navStructure} />}
+            userInfo.role === "hr") && <SideBar navStructure={navStructure} />}
         <main className="p-4 flex-fill bg-light">
           <Outlet />
         </main>
