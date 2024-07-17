@@ -1,9 +1,8 @@
-// src/components/RegistrationForm.js
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSendTokenMutation } from "../slices/hrApiSlice";
 import { Form, Button, Spinner, Alert } from "react-bootstrap";
-import { toast } from "react-toastify";
 import { validateName, validateEmail } from "../utils/validation";
+
 const RegistrationForm = ({ handleClose }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

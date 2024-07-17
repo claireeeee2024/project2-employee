@@ -5,24 +5,32 @@ const CustomModal = ({ show, handleClose, handleSave, isUpdatingStatus }) => {
   const [status, setStatus] = useState("");
   const [feedback, setFeedback] = useState("");
   const [feedbackRequired, setFeedbackRequired] = useState(false);
-  
+
   const handleStatusChange = (newStatus) => {
     if (newStatus === "Rejected") {
-      setFeedbackRequired(true);
       setStatus(newStatus);
+      setFeedbackRequired(true);
     } else if (newStatus === "Approved") {
       setFeedback("");
       setFeedbackRequired(false);
       setStatus(newStatus);
+    } else {
+      setStatus("");
+      setFeedback("");
+      setFeedbackRequired(false);
     }
   };
+
   const handleSubmit = () => {
     if (status === "Rejected" && !feedback) {
       return;
     }
-    if (status === "Rejected" || status === "Approved")
+    if (status === "Rejected" || status === "Approved") {
       handleSave(status, feedback);
+    }
   };
+
+  const isSaveButtonDisabled = !status || (status === "Rejected" && !feedback);
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -37,7 +45,7 @@ const CustomModal = ({ show, handleClose, handleSave, isUpdatingStatus }) => {
             value={status}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
-            <option>Update the status</option>
+            <option value="">Update the status</option>
             <option value="Approved">Approved</option>
             <option value="Rejected">Rejected</option>
           </Form.Control>
@@ -66,7 +74,7 @@ const CustomModal = ({ show, handleClose, handleSave, isUpdatingStatus }) => {
         </Button>
         <Button
           variant="primary"
-          disabled={isUpdatingStatus}
+          disabled={isUpdatingStatus || isSaveButtonDisabled}
           onClick={handleSubmit}
         >
           {isUpdatingStatus ? (

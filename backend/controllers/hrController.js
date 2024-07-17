@@ -165,6 +165,7 @@ export const updateOnboardingStatusByUsername = asyncHandler(
     if (application.onboardingStatus === "Pending") {
       if (status === "Approved") {
         application.onboardingStatus = "Approved";
+        application.onboardingFeedback = "";
       } else if (status === "Rejected") {
         application.onboardingStatus = "Rejected";
         application.onboardingFeedback = feedback || "";
@@ -257,7 +258,6 @@ export const updateVisaDocumentStatus = asyncHandler(async (req, res) => {
     [`visaStatus.documents.${documentType}.feedback`]: feedback,
   };
 
-
   const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, {
     new: true,
   });
@@ -312,5 +312,3 @@ export const searchEmployee = asyncHandler(async (req, res) => {
   );
   res.status(200).json(users);
 });
-
-
