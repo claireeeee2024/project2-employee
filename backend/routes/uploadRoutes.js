@@ -44,9 +44,14 @@ router.post(
   (req, res) => {
     console.log("start uploading");
     const files = req.files;
+    console.log(files);
     res.json({
-      profilePicture: `/files/${files.profilePicture[0].filename}`,
-      optReceipt: `/files/${files.optReceipt[0].filename}`,
+      profilePicture: files.profilePicture
+        ? `/files/${files.profilePicture[0].filename}`
+        : null,
+      optReceipt: files.optReceipt
+        ? `/files/${files.optReceipt[0].filename}`
+        : null,
     });
 
     // uploadSingleImage(req, res, function (err) {

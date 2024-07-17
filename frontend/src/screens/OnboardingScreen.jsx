@@ -230,7 +230,7 @@ const OnboardingScreen = () => {
       formData: updatedForm,
     }).unwrap();
     dispatch(setCredentials({ ...res }));
-    console.log(res);
+    setFormData(updatedForm);
     // handle form submission
   };
 
