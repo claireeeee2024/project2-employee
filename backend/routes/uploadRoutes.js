@@ -6,7 +6,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "uploads/visa-documents/"); // Change the destination folder
+    cb(null, "files"); 
   },
   filename(req, file, cb) {
     cb(
