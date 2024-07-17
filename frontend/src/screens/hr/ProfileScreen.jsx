@@ -19,10 +19,11 @@ const ProfileScreen = () => {
 
   const handleClickName = (key, value, item) => {
     if (key === "name") {
-      return <Link to={`/profiles/${item.id}`}>{value}</Link>;
+      return <Link to={`/profiles/${item.username}`}>{value}</Link>;
     }
     return value;
   };
+  console.log(data);
 
   const headers = [
     { key: "name", label: "Name" },

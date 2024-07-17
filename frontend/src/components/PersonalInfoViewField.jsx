@@ -3,7 +3,6 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import { BASE_URL } from "../constants";
 const PersonalInfoViewField = ({ data }) => {
   if (!data) return <div>loading</div>;
-  console.log(data);
   const {
     personalInfo,
     address,

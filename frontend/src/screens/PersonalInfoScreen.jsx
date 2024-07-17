@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from 'react-router-dom';
 import { useGetOnboardingQuery } from "../slices/usersApiSlice";
 import { useDispatch } from "react-redux";
 import { Form, Button, Row, Col, Container, Image } from "react-bootstrap";
@@ -9,14 +10,15 @@ import {
 } from "../slices/usersApiSlice";
 import PersonalInfoField from "../components/PersonalInfoField";
 import PersonalInfoViewField from "../components/PersonalInfoViewField";
+import { useGetEmployeeFullProfileQuery } from '../slices/hrApiSlice';
 
-const PersonalInfoScreen = () => {
+const PersonalInfoScreen = (user) => {
   const { userInfo } = useSelector((state) => state.auth);
+  const { EmployeeUsername } = useParams();
   const { username, email } = userInfo;
   const { data, isLoading, error } = useGetOnboardingQuery({
-    username: username,
+    username: EmployeeUsername && user && userInfo.role === "hr" ? EmployeeUsername : username,
   });
-  console.log(data);
   const [updateInfo] = useUpdateInfoMutation();
   const [initialFormData, setInitialFormData] = useState({
     firstName: "",
@@ -188,7 +190,8 @@ const PersonalInfoScreen = () => {
       ) : (
         <div>
           <PersonalInfoViewField data={info} />
-          <Button onClick={handleEdit}>Edit</Button>
+        
+          {userInfo.role !== "hr" && <Button onClick={handleEdit}>Edit</Button>}
         </div>
       )}
     </>

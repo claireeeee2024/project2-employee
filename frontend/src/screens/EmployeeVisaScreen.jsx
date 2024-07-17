@@ -6,6 +6,8 @@ import {
   useUpdateVisaStatusMutation,
   useUploadVisaDocumentMutation,
 } from "../slices/usersApiSlice";
+import {mapDocumentType} from "../utils/validation";
+import { BASE_URL } from "../constants";
 
 export const EmployeeVisaManagement = () => {
   const [file, setFile] = useState(null);
@@ -109,10 +111,11 @@ export const EmployeeVisaManagement = () => {
     try {
       const uploadResult = await uploadVisaDocument(formData).unwrap();
       // update the visa status with the file path
+      console.log("uploadResult", uploadResult);
       await updateVisaStatus({
         id: userInfo._id,
         documentType: currentStep,
-        filePath: uploadResult.filePath,
+        filePath: uploadResult.file,
       }).unwrap();
 
       setFile(null);
@@ -140,7 +143,7 @@ export const EmployeeVisaManagement = () => {
           <ListGroup.Item key={docType}>
             {mapDocumentType(docType)}:{" "}
             {doc.file ? (
-              <a href={doc.file} target="_blank" rel="noopener noreferrer">
+              <a href={BASE_URL + "/" + doc.file} target="_blank" rel="noopener noreferrer">
                 View Document
               </a>
             ) : (
@@ -163,11 +166,12 @@ export const EmployeeVisaManagement = () => {
   return (
     <Container>
       <h1>My Visa Status</h1>
-      <Alert variant="info">{message}</Alert>
+      {message && (message !== "") && <Alert variant="info">{message}</Alert>}
 
       {isAllDocumentsApproved() ? (
         <>
           <Alert variant="success">All documents have been approved.</Alert>
+          {setMessage("")}
           {renderDocumentList()}
         </>
       ) : (
