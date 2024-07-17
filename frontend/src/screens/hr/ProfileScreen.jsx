@@ -1,17 +1,20 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Container, Row, Col, Form, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetEmployeeProfilesQuery } from "../../slices/hrApiSlice";
+import { setSearchTerm } from "../../slices/profileSlice";
 import { SummaryList } from "../../components/SummaryList";
 import Loader from "../../components/Loader";
 
 const ProfileScreen = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const dispatch = useDispatch();
+  const searchTerm = useSelector((state) => state.profile.searchTerm);
 
   const { data, isLoading, isError } = useGetEmployeeProfilesQuery();
 
   const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+    dispatch(setSearchTerm(e.target.value));
   };
 
   const handleClickName = (key, value, item) => {

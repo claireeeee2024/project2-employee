@@ -257,22 +257,6 @@ export const updateVisaDocumentStatus = asyncHandler(async (req, res) => {
     [`visaStatus.documents.${documentType}.feedback`]: feedback,
   };
 
-  // if (status === "Approved") {
-
-  //   const documentSequence = ["optReceipt", "optEAD", "i983", "i20"];
-
-  //   // Find the index of the current document
-  //   const currentIndex = documentSequence.indexOf(documentType);
-
-  //   // If there's a next document in the sequence, set it as the current document
-  //   if (currentIndex < documentSequence.length - 1) {
-  //     const nextDocument = documentSequence[currentIndex + 1];
-  //     updateData["visaStatus.currentDocument"] = mapDocumentTypeToFrontend(nextDocument);
-  //   } else {
-  //     // If it's the last document, set currentDocument to null or some final state
-  //     updateData["visaStatus.currentDocument"] = null;
-  //   }
-  // }
 
   const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, {
     new: true,
@@ -328,3 +312,5 @@ export const searchEmployee = asyncHandler(async (req, res) => {
   );
   res.status(200).json(users);
 });
+
+

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import {
   useGetVisaStatusByIdQuery,
   useUpdateVisaStatusMutation,
+  useUploadVisaDocumentMutation,
 } from "../slices/usersApiSlice";
 
 export const EmployeeVisaManagement = () => {
@@ -14,8 +15,11 @@ export const EmployeeVisaManagement = () => {
     isLoading,
     isError,
   } = useGetVisaStatusByIdQuery(userInfo._id);
+
   const [updateVisaStatus, { isLoading: isUpdating }] =
     useUpdateVisaStatusMutation();
+  
+  const [uploadVisaDocument, { isLoading: isUploading, error: uploadError }] = useUploadVisaDocumentMutation();
 
   const [currentStep, setCurrentStep] = useState("");
   const [message, setMessage] = useState("");
@@ -101,14 +105,16 @@ export const EmployeeVisaManagement = () => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("documentType", currentStep);
 
     try {
+      const uploadResult = await uploadVisaDocument(formData).unwrap();
+      // update the visa status with the file path
       await updateVisaStatus({
         id: userInfo._id,
         documentType: currentStep,
-        file: formData,
+        filePath: uploadResult.filePath,
       }).unwrap();
+
       setFile(null);
       setMessage("File uploaded successfully");
       // The query will automatically refetch due to invalidation
@@ -150,14 +156,13 @@ export const EmployeeVisaManagement = () => {
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <Alert variant="danger">Error loading visa status</Alert>;
-  console.log(visaStatus);
-  // if (visaStatus?.visaStatus?.citizenshipStatus?.workAuthorizationType !== 'F1(CPT/OPT)') {
-  //   return <Alert variant="info">This page is only applicable for F1(CPT/OPT) visa holders.</Alert>;
-  // }
+  if (visaStatus?.citizenshipStatus?.workAuthorizationType !== 'F1(CPT/OPT)') {
+    return <Alert variant="info">This page is only applicable for F1(CPT/OPT) visa holders.</Alert>;
+  }
 
   return (
     <Container>
-      <h1>Visa Status Management</h1>
+      <h1>My Visa Status</h1>
       <Alert variant="info">{message}</Alert>
 
       {isAllDocumentsApproved() ? (

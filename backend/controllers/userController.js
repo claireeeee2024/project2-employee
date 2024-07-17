@@ -308,6 +308,7 @@ export const getVisaStatusById = asyncHandler(async (req, res) => {
   if (user) {
     res.json({
       visaStatus: user.visaStatus,
+      citizenshipStatus: user.citizenshipStatus,
     });
   } else {
     res.status(404);
@@ -356,4 +357,20 @@ export const updateVisaStatus = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
+});
+
+// @desc    Get user citizenship status by ID
+// @route   GET /api/hr/citizenship-status/:id
+// @access  Private/Admin
+export const getCitizenshipStatusById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select(
+    "citizenshipStatus"
+  );
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  res.json(user.citizenshipStatus);
 });

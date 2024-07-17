@@ -9,6 +9,7 @@ import {
   getOnboarding,
   postOnboarding,
   updateInfo,
+  getCitizenshipStatusById,
 } from "../controllers/userController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
@@ -33,5 +34,7 @@ router.post("/login", authUser);
 router.post("/onboarding", postOnboarding);
 router.get("/onboarding", getOnboarding);
 router.put("/info", updateInfo);
+
+router.get("/citizenship-status/:id", getCitizenshipStatusById);
 
 export default router;

@@ -47,6 +47,8 @@ router.get("/visa-status/in-progress", protect, admin, getVisaStatusInProgress);
 router.get("/search", protect, admin, searchEmployee);
 
 
+
+
 router.post("/send-token", protect, admin, sendRegistrationToken);
 router.get("/registration-history", protect, admin, getRegistrationHistory);
 router.get("/onboardings", protect, admin, listOnboardings);
