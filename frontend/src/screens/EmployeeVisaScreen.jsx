@@ -170,8 +170,6 @@ export const EmployeeVisaManagement = () => {
 
       {isAllDocumentsApproved() ? (
         <>
-          <Alert variant="success">All documents have been approved.</Alert>
-          {setMessage("")}
           {renderDocumentList()}
         </>
       ) : (
