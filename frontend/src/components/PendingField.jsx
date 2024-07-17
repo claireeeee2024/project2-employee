@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
+import { BASE_URL } from "../constants";
 
 const PendingField = ({ data }) => {
   const {
@@ -54,6 +55,14 @@ const PendingField = ({ data }) => {
           <Row>
             <Col>
               <strong>Gender:</strong> {personalInfo.gender}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <strong>Profile Picture:</strong>{" "}
+              <a href={`${BASE_URL}${personalInfo.profilePicture}`} download>
+                profile picture
+              </a>
             </Col>
           </Row>
         </Card.Body>
@@ -186,7 +195,12 @@ const PendingField = ({ data }) => {
           <Row>
             <Col>
               <strong>OPT Receipt:</strong>{" "}
-              {visaStatus.documents.optReceipt.file}
+              <a
+                href={`${BASE_URL}${visaStatus.documents.optReceipt.file}`}
+                download
+              >
+                opt receipt
+              </a>
             </Col>
             <Col>
               <strong>Status:</strong> {visaStatus.documents.optReceipt.status}

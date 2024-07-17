@@ -1,4 +1,4 @@
-import { USERS_URL } from "../constants";
+import { USERS_URL, UPLOAD_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 export const userApiSlice = apiSlice.injectEndpoints({
@@ -26,10 +26,10 @@ export const userApiSlice = apiSlice.injectEndpoints({
       providesTags: ["User"],
     }),
     uploadProfile: builder.mutation({
-      query: (image) => ({
-        url: `${USERS_URL}/upload`,
+      query: (data) => ({
+        url: `${UPLOAD_URL}`,
         method: "POST",
-        body: image,
+        body: data,
       }),
     }),
     updateInfo: builder.mutation({

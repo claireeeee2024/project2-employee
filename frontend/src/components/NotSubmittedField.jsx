@@ -308,46 +308,35 @@ const NotSubmittedField = ({
   handleReferenceChange,
   handleEmergencyContactChange,
   addEmergencyContact,
-  handleFileChange,
+  //   handleFileChange,
 
   handleSubmit,
 }) => {
+  console.log(formData);
   const { userInfo } = useSelector((state) => state.auth);
-  const { email } = userInfo;
+  //   const { email } = userInfo;
   const [imagePreview, setImagePreview] = useState(null);
+  const [optPreview, setOptPreview] = useState(null);
 
   const handlePictureChange = (e) => {
     const file = e.target.files[0];
+    // console.log(file);
     setFormData({ ...formData, profilePicture: file });
     setImagePreview(URL.createObjectURL(file));
   };
 
-  const handlePictureUpload = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("profilePicture", formData.profilePicture);
-
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/api/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(res.data);
-      setFormData({ ...formData, profilePicture: res.data.filePath });
-      setImagePreview(`http://localhost:8000${res.data.filePath}`);
-    } catch (err) {
-      console.error("Error uploading file:", err);
-    }
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    const file = files[0];
+    setFormData({
+      ...formData,
+      [name]: file,
+    });
+    setOptPreview(URL.createObjectURL(file));
   };
 
   return (
     <Container>
-      <h1>Onboarding</h1>
       <Form onSubmit={handleSubmit}>
         <NameField handleChange={handleChange} formData={formData} />
         <PictureField
@@ -387,7 +376,12 @@ const NotSubmittedField = ({
               Email<span style={{ color: "red" }}>*</span>
             </strong>
           </Form.Label>
-          <Form.Control type="email" name="email" value={email} readOnly />
+          <Form.Control
+            type="email"
+            name="email"
+            value={formData.email}
+            readOnly
+          />
         </Form.Group>
         <Form.Group controlId="ssn">
           <Form.Label>
@@ -498,6 +492,11 @@ const NotSubmittedField = ({
                   name="optReceipt"
                   onChange={handleFileChange}
                 />
+                {optPreview && (
+                  <a href={optPreview} download>
+                    Download Opt receipt
+                  </a>
+                )}
               </Form.Group>
             )}
             {formData.workAuthorization === "Other" && (
@@ -540,13 +539,15 @@ const NotSubmittedField = ({
           addEmergencyContact={addEmergencyContact}
           formData={formData}
         />
-        <h2>Summary of Uploaded Files</h2>
+        {/* <h2>Summary of Uploaded Files</h2>
         <ul>
           {formData.documents.profilePicture && <li>Profile Picture</li>}
           {formData.documents.driversLicense && <li>Driver’s License</li>}
           {formData.documents.workAuthorization && <li>Work Authorization</li>}
-        </ul>
-        <Button type="submit">Submit</Button>
+        </ul> */}
+        <div>
+          <Button type="submit">Submit</Button>
+        </div>
       </Form>
     </Container>
   );

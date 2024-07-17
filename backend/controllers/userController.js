@@ -222,6 +222,8 @@ export const postOnboarding = asyncHandler(async (req, res) => {
     _id: user._id,
     username: user.username,
     onboarding: user.onboardingStatus,
+    email: user.email,
+    role: user.role,
   });
 });
 
@@ -282,6 +284,8 @@ export const updateInfo = asyncHandler(async (req, res) => {
     _id: user._id,
     username: user.username,
     onboarding: user.onboardingStatus,
+    email: user.email,
+    role: user.role,
   });
 });
 
