@@ -54,7 +54,7 @@ const userSchema = new mongoose.Schema(
       },
       workAuthorizationType: {
         type: String,
-        enum: ["H1-B", "L2", "F1(CPT/OPT)", "H4", "Other"],
+        enum: ["H1-B", "L2", "F1(CPT/OPT)", "H4", "Other", ""],
       },
       visaTitle: String,
       startDate: Date,

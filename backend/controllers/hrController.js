@@ -91,8 +91,8 @@ export const sendRegistrationToken = asyncHandler(async (req, res) => {
 // @route   POST /api/hr/send-notification
 // @access  Private/Admin
 export const sendNotificationToEmployee = asyncHandler(async (req, res) => {
-  const { employeeId: userId, emailMessage } = req.body;
-
+  const { employeeId: userId, nextStep: emailMessage } = req.body;
+  console.log(req.body);
   // Find the user based on userId
   const user = await User.findById(userId);
 
@@ -101,6 +101,7 @@ export const sendNotificationToEmployee = asyncHandler(async (req, res) => {
   }
 
   const name = user.personalInfo.firstName + " " + user.personalInfo.lastName;
+  console.log(name, emailMessage);
 
   // Setup Nodemailer transporter
   const transporter = nodemailer.createTransport({
@@ -116,10 +117,8 @@ export const sendNotificationToEmployee = asyncHandler(async (req, res) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: user.email,
-    subject: "Registration Token",
-    html: `<p>Dear ${{ name }},</p><p>Please <strong>${{
-      emailMessage,
-    }}</strong></p>`,
+    subject: "Visa Status - Next Step",
+    html: `<p>Dear ${name},</p><p>Please <strong>${emailMessage}</strong></p>`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -235,7 +234,7 @@ export const getEmployeeProfiles = asyncHandler(async (req, res) => {
   const employees = await User.find()
     .sort({ "personalInfo.lastName": 1 })
     .select(
-      "username personalInfo.firstName personalInfo.lastName personalInfo.ssn citizenshipStatus.workAuthorizationType contactInfo.cellPhone email"
+      "username personalInfo.firstName personalInfo.lastName personalInfo.preferredName personalInfo.ssn citizenshipStatus.workAuthorizationType contactInfo.cellPhone email"
     );
 
   // Calculate total number of employees
@@ -245,6 +244,7 @@ export const getEmployeeProfiles = asyncHandler(async (req, res) => {
     id: employee._id,
     username: employee.username,
     name: `${employee.personalInfo.lastName}, ${employee.personalInfo.firstName}`,
+    preferredName: employee.personalInfo.preferredName,
     ssn: employee.personalInfo.ssn,
     workAuthorizationTitle:
       employee.citizenshipStatus.workAuthorizationType || "N/A",
@@ -320,7 +320,7 @@ export const updateVisaDocumentStatus = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 export const getAllVisaStatus = asyncHandler(async (req, res) => {
   const users = await User.find({}).select(
-    "personalInfo.firstName personalInfo.lastName citizenshipStatus visaStatus"
+    "personalInfo.firstName personalInfo.lastName personalInfo.preferredName citizenshipStatus visaStatus"
   );
   res.json(users);
 });

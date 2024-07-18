@@ -76,6 +76,7 @@ const VisaManagementScreen = () => {
       const fullName = `${employee.personalInfo.firstName} ${
         employee.personalInfo.lastName
       } ${employee.personalInfo.preferredName || ""}`.toLowerCase();
+      console.log(fullName, employee.personalInfo.preferredName);
       return fullName.includes(searchTerm.toLowerCase());
     });
   }, [allEmployees, searchTerm]);
@@ -185,7 +186,7 @@ const VisaManagementScreen = () => {
   const getDocumentLinks = (employee) => {
     // Logic to create document download/preview links
     const documents = employee.visaStatus.documents;
-    console.log(documents);
+    // console.log(documents);
     return Object.entries(documents)
       .filter(([_, doc]) => doc.file)
       .map(([docName, doc]) => (

@@ -195,7 +195,7 @@ export const postOnboarding = asyncHandler(async (req, res) => {
         emergencyContacts: formData.emergencyContacts,
         "documents.driverLicense": formData.documents.driverLicense,
         "documents.workAuthorization": formData.documents.workAuthorization,
-        "visaStatus.currentDocument": "optReceipt",
+        "visaStatus.currentDocument": "OPT Receipt",
         "visaStatus.documents.optReceipt.file":
           formData.documents.workAuthorization,
         // 更新其它visaStatus文档

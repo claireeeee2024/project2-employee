@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Container, Row, Col, Form, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { useGetEmployeeProfilesQuery } from "../../slices/hrApiSlice";
 import { setSearchTerm } from "../../slices/profileSlice";
 import { SummaryList } from "../../components/SummaryList";
@@ -40,9 +40,19 @@ const ProfileScreen = () => {
     return data.employees.filter((employee) => {
       if (!employee) return false;
       const searchLower = searchTerm.toLowerCase();
-      return employee.name.toLowerCase().includes(searchLower);
+      return (
+        employee.name.toLowerCase().includes(searchLower) ||
+        employee.preferredName.toLowerCase().includes(searchLower)
+      );
     });
   }, [data, searchTerm]);
+  // ((employee) => {
+  //   const fullName = `${employee.personalInfo.firstName} ${
+  //     employee.personalInfo.lastName
+  //   } ${employee.personalInfo.preferredName || ""}`.toLowerCase();
+  //   console.log(fullName, employee.personalInfo.preferredName);
+  //   return fullName.includes(searchTerm.toLowerCase());
+  // });
 
   const renderEmployeeList = () => {
     if (filteredEmployees.length === 0) {
