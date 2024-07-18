@@ -528,7 +528,7 @@ const users = [
       },
     ],
     visaStatus: {
-      currentDocument: "I-983",
+      currentDocument: "I-20",
       documents: {
         optReceipt: {
           file: "opt_receipt_linda_smith.pdf",

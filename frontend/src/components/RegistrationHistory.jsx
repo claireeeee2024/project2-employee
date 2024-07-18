@@ -28,7 +28,13 @@ const RegistrationHistory = () => {
                 <tr key={entry._id}>
                   <td>{entry.email}</td>
                   <td>{entry.name}</td>
-                  <td>{entry.registrationToken}</td>
+                  <td>
+                    <a
+                      href={`http://localhost:3000/register?token=${entry.registrationToken}`}
+                    >
+                      {entry.registrationToken}
+                    </a>
+                  </td>
                   <td>{entry.status}</td>
                 </tr>
               ))}

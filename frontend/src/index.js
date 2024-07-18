@@ -25,6 +25,7 @@ import { Profile } from "./components/Profile";
 import { EmployeeVisaManagement } from "./screens/EmployeeVisaScreen";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TokenInvalidScreen from "./screens/TokenInvalidScreen";
+import UnauthorizedScreen from "./screens/UnauthorizedScreen";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -61,6 +62,7 @@ const router = createBrowserRouter(
         </Route>
       </Route>
       <Route path="/invalid-token" element={<TokenInvalidScreen />} />
+      <Route path="/unauthorized" element={<UnauthorizedScreen />} />
       <Route path="*" element={<ErrorScreen />} />
     </Route>
   )

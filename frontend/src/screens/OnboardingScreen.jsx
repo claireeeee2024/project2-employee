@@ -31,14 +31,14 @@ const OnboardingScreen = () => {
   const onboardingStatus = data
     ? data.onboardingStatus
     : userInfo.onboardingStatus;
-
+  const [fetchError, setFetchError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!userInfo) {
-      navigate("/");
-    }
-  }, [userInfo, navigate]);
+  // useEffect(() => {
+  //   if (!userInfo) {
+  //     navigate("/");
+  //   }
+  // }, [userInfo, navigate]);
 
   const dispatch = useDispatch();
   const [updateApplicationStatus, { isLoading: isUpdatingStatus }] =
@@ -165,8 +165,10 @@ const OnboardingScreen = () => {
       if (userInfo.role === "employee" && onboardingStatus === "Approved") {
         navigate("/");
       }
+    } else if (error) {
+      setFetchError(error.data?.message || "Invalid username.");
     }
-  }, [data, dispatch]);
+  }, [data, error, dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -238,7 +240,11 @@ const OnboardingScreen = () => {
     return <div>Loading</div>;
   }
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <Container>
+        <Alert variant="danger">{fetchError}</Alert>
+      </Container>
+    );
   }
 
   if (userInfo.role === "hr") {

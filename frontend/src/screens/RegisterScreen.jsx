@@ -27,19 +27,30 @@ const RegisterScreen = () => {
 
   const [verifyToken, { isLoading: tokenLoading, error: tokenError }] =
     useVerifyTokenMutation();
+
+  const [showTokenMessage, setShowTokenMessage] = useState(true);
+
   useEffect(() => {
+    let timeoutId;
     async function verify(token) {
       try {
         await verifyToken({ token }).unwrap();
       } catch (error) {
-        navigate("/invalid-token");
+        setTimeout(() => {
+          navigate("/invalid-token");
+        }, 1000);
+      } finally {
+        timeoutId = setTimeout(() => {
+          setShowTokenMessage(false);
+        }, 1000);
       }
     }
-
     if (token) {
       verify(token);
     }
-  }, [token, verifyToken]);
+
+    return () => clearTimeout(timeoutId);
+  }, [token, verifyToken, navigate]);
 
   useEffect(() => {
     if (userInfo) {
@@ -67,17 +78,14 @@ const RegisterScreen = () => {
       toast.error(error.data?.message || "Registration failed");
     }
   };
-  if (tokenError) {
-    return <div>Token verification failed</div>;
-  }
+  // if (tokenError) {
+  //   return <div>Token verification failed</div>;
+  // }
 
-  return tokenLoading ? (
+  return showTokenMessage ? (
     <Row className="justify-content-center">
       <Col className="my-4 mx-4 text-center">
-        <i
-          className="bi bi-key-fill"
-          style={{ fontSize: "100px" }}
-        ></i>
+        <i className="bi bi-key-fill" style={{ fontSize: "100px" }}></i>
         <h4>Verifying your token . . . </h4>
       </Col>
     </Row>
