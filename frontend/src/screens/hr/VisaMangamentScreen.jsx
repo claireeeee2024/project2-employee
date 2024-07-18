@@ -1,30 +1,64 @@
-import React, { useState, useMemo } from 'react';
-import { Container, Row, Col, Form, Alert, Tabs, Tab, Modal, Button } from 'react-bootstrap';
-import { useGetAllVisaStatusQuery, useGetVisaStatusInProgressQuery } from '../../slices/hrApiSlice';
-import {SummaryList} from '../../components/SummaryList';
-import Loader from '../../components/Loader';
-import VisaActionModal from '../../components/VisaActionModal';
-import {DocumentPreviewModal} from '../../components/DocumentPreviewModal';
+import React, { useState, useMemo } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Alert,
+  Tabs,
+  Tab,
+  Modal,
+  Button,
+} from "react-bootstrap";
+import {
+  useGetAllVisaStatusQuery,
+  useGetVisaStatusInProgressQuery,
+  useSendNotificationMutation,
+} from "../../slices/hrApiSlice";
+import { SummaryList } from "../../components/SummaryList";
+import Loader from "../../components/Loader";
+import VisaActionModal from "../../components/VisaActionModal";
+import { DocumentPreviewModal } from "../../components/DocumentPreviewModal";
+import { BASE_URL } from "../../constants";
 
 const VisaManagementScreen = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showActionModal, setShowActionModal] = useState(false);
-//   const [showPreviewModal, setShowPreviewModal] = useState(false);
-//   const [previewDocument, setPreviewDocument] = useState(null);
-  
-  const { data: allEmployees, isLoading: isLoadingAll, isError: isErrorAll } = useGetAllVisaStatusQuery();
-  const { data: inProgressEmployees, isLoading: isLoadingInProgress, isError: isErrorInProgress } = useGetVisaStatusInProgressQuery();
+  const [sendNotificationMutation] = useSendNotificationMutation();
+  //   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  //   const [previewDocument, setPreviewDocument] = useState(null);
 
-  const handleSendNotification = (employeeId) => {
-    console.log('send notification to employee', employeeId);
-    // TODO: send notification by email
+  const {
+    data: allEmployees,
+    isLoading: isLoadingAll,
+    isError: isErrorAll,
+  } = useGetAllVisaStatusQuery();
+  const {
+    data: inProgressEmployees,
+    isLoading: isLoadingInProgress,
+    isError: isErrorInProgress,
+  } = useGetVisaStatusInProgressQuery();
+
+  const handleSendNotification = async (employeeId, nextStep) => {
+    try {
+      console.log("send notification to employee", employeeId);
+      const response = await sendNotificationMutation({
+        employeeId,
+        nextStep,
+      });
+      console.log(employeeId, nextStep, response);
+
+      alert(response.data.message);
+    } catch (error) {
+      alert("Failed to send notification");
+    }
   };
 
-//   const handlePreviewDocument = (document) => {
-//     setPreviewDocument(document);
-//     setShowPreviewModal(true);
-//   };
+  //   const handlePreviewDocument = (document) => {
+  //     setPreviewDocument(document);
+  //     setShowPreviewModal(true);
+  //   };
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -36,27 +70,30 @@ const VisaManagementScreen = () => {
 
   const filteredEmployees = useMemo(() => {
     if (!allEmployees) return [];
-    if (searchTerm.trim() === '') return allEmployees;
+    if (searchTerm.trim() === "") return allEmployees;
 
-    return allEmployees.filter(employee => {
-      const fullName = `${employee.personalInfo.firstName} ${employee.personalInfo.lastName} ${employee.personalInfo.preferredName || ''}`.toLowerCase();
+    return allEmployees.filter((employee) => {
+      const fullName = `${employee.personalInfo.firstName} ${
+        employee.personalInfo.lastName
+      } ${employee.personalInfo.preferredName || ""}`.toLowerCase();
+      console.log(fullName, employee.personalInfo.preferredName);
       return fullName.includes(searchTerm.toLowerCase());
     });
   }, [allEmployees, searchTerm]);
 
   const inProgressHeaders = [
-    { key: 'name', label: 'Name' },
-    { key: 'workAuthorization', label: 'Work Authorization' },
-    { key: 'daysRemaining', label: 'Days Remaining' },
-    { key: 'nextStep', label: 'Next Step' },
-    { key: 'action', label: 'Action' },
+    { key: "name", label: "Name" },
+    { key: "workAuthorization", label: "Work Authorization" },
+    { key: "daysRemaining", label: "Days Remaining" },
+    { key: "nextStep", label: "Next Step" },
+    { key: "action", label: "Action" },
   ];
 
   const allEmployeesHeaders = [
-    { key: 'name', label: 'Name' },
-    { key: 'workAuthorization', label: 'Work Authorization' },
-    { key: 'daysRemaining', label: 'Days Remaining' },
-    { key: 'documents', label: 'Documents' },
+    { key: "name", label: "Name" },
+    { key: "workAuthorization", label: "Work Authorization" },
+    { key: "daysRemaining", label: "Days Remaining" },
+    { key: "documents", label: "Documents" },
   ];
 
   const calculateDaysRemaining = (endDate) => {
@@ -72,12 +109,20 @@ const VisaManagementScreen = () => {
     if (nextStep.includes("Waiting for HR approval")) {
       return (
         <>
-          <Button variant="secondary" onClick={() => handleEmployeeAction(employee)}>Take Action</Button>
+          <Button
+            variant="secondary"
+            onClick={() => handleEmployeeAction(employee)}
+          >
+            Take Action
+          </Button>
         </>
       );
     } else if (nextStep.includes("Upload")) {
       return (
-        <Button variant="secondary" onClick={() => handleSendNotification(employee._id)}>
+        <Button
+          variant="secondary"
+          onClick={() => handleSendNotification(employee._id, nextStep)}
+        >
           Send Notification
         </Button>
       );
@@ -86,13 +131,19 @@ const VisaManagementScreen = () => {
   };
 
   const formatEmployeeData = (emps, includeAction = false) => {
-    return emps.map(emp => ({
+    return emps.map((emp) => ({
       id: emp._id,
       name: `${emp.personalInfo.lastName}, ${emp.personalInfo.firstName}`,
-      workAuthorization: `${emp.citizenshipStatus.workAuthorizationType} (${new Date(emp.citizenshipStatus.startDate).toLocaleDateString()} - ${new Date(emp.citizenshipStatus.endDate).toLocaleDateString()})`,
+      workAuthorization: `${
+        emp.citizenshipStatus.workAuthorizationType
+      } (${new Date(
+        emp.citizenshipStatus.startDate
+      ).toLocaleDateString()} - ${new Date(
+        emp.citizenshipStatus.endDate
+      ).toLocaleDateString()})`,
       daysRemaining: calculateDaysRemaining(emp.citizenshipStatus.endDate),
       nextStep: getNextStep(emp),
-      action: includeAction ? renderAction(emp): null,
+      action: includeAction ? renderAction(emp) : null,
       documents: getDocumentLinks(emp),
     }));
   };
@@ -104,13 +155,29 @@ const VisaManagementScreen = () => {
     }
     switch (employee.visaStatus.currentDocument) {
       case "OPT Receipt":
-        return employee.visaStatus.documents.optReceipt.status === "Pending" ? "Waiting for HR approval" : "Upload OPT EAD";
+        return employee.visaStatus.documents.optReceipt.status === "Pending"
+          ? "Waiting for HR approval"
+          : employee.visaStatus.documents.optReceipt.status === "Rejected"
+          ? "Upload New OPT Receipt"
+          : "Upload OPT EAD";
       case "OPT EAD":
-        return employee.visaStatus.documents.optEAD.status === "Pending" ? "Waiting for HR approval" : "Upload I-983";
+        return employee.visaStatus.documents.optEAD.status === "Pending"
+          ? "Waiting for HR approval"
+          : employee.visaStatus.documents.optEAD.status === "Rejected"
+          ? "Upload New OPT EAD"
+          : "Upload I-983";
       case "I-983":
-        return employee.visaStatus.documents.i983.status === "Pending" ? "Waiting for HR approval" : "Upload I-20";
+        return employee.visaStatus.documents.i983.status === "Pending"
+          ? "Waiting for HR approval"
+          : employee.visaStatus.documents.i983.status === "Rejected"
+          ? "Upload New I-983"
+          : "Upload I-20";
       case "I-20":
-        return employee.visaStatus.documents.i20.status === "Pending" ? "Waiting for HR approval" : "All documents approved";
+        return employee.visaStatus.documents.i20.status === "Pending"
+          ? "Waiting for HR approval"
+          : employee.visaStatus.documents.i20.status === "Rejected"
+          ? "Upload New I-20"
+          : "All documents approved";
       default:
         return "Unknown status";
     }
@@ -119,11 +186,18 @@ const VisaManagementScreen = () => {
   const getDocumentLinks = (employee) => {
     // Logic to create document download/preview links
     const documents = employee.visaStatus.documents;
+    // console.log(documents);
     return Object.entries(documents)
       .filter(([_, doc]) => doc.file)
       .map(([docName, doc]) => (
         <div key={docName}>
-          <a href={doc.file} target="_blank" rel="noopener noreferrer">{docName}</a>
+          <a
+            href={BASE_URL + "/" + doc.file}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {docName}
+          </a>
           {doc.status === "Approved" && " (Approved)"}
         </div>
       ));
@@ -135,18 +209,18 @@ const VisaManagementScreen = () => {
     }
 
     return (
-      <SummaryList 
+      <SummaryList
         headers={headers}
         data={formatEmployeeData(employees, includeAction)}
       />
     );
   };
 
-
-
-
   if (isLoadingAll || isLoadingInProgress) return <Loader />;
-  if (isErrorAll || isErrorInProgress) return <Alert variant="danger">Error loading visa status information</Alert>;
+  if (isErrorAll || isErrorInProgress)
+    return (
+      <Alert variant="danger">Error loading visa status information</Alert>
+    );
 
   return (
     <Container>
@@ -157,9 +231,9 @@ const VisaManagementScreen = () => {
         </Tab>
         <Tab eventKey="allEmployees" title="All Employees">
           <Form.Group className="mb-3">
-            <Form.Control 
-              type="text" 
-              placeholder="Search employees..." 
+            <Form.Control
+              type="text"
+              placeholder="Search employees..."
               value={searchTerm}
               onChange={handleSearch}
             />
@@ -168,7 +242,7 @@ const VisaManagementScreen = () => {
         </Tab>
       </Tabs>
       {selectedEmployee && (
-        <VisaActionModal 
+        <VisaActionModal
           show={showActionModal}
           onHide={() => setShowActionModal(false)}
           employee={selectedEmployee}

@@ -95,7 +95,7 @@ const AuthForm = ({
     <Container>
       <Row className="py-lg-3">
         <Col lg={5} sm={12} className="mx-auto">
-          <Card className="shadow-lg mt-3">
+          <Card className="shadow-lg mt-5">
             <Card.Body className="mt-4 mx-3">
               <Form onSubmit={submitHandler}>
                 <h3 className="text-center mb-3">{title}</h3>
@@ -127,22 +127,13 @@ const AuthForm = ({
                 )}
                 {mode !== "sent-reset-email" ? (
                   <>
-                    <div className="d-grid mt-4">
+                    <div className="d-grid my-4">
                       <Button type="submit" variant="primary">
                         {mode === "login" && "Sign In"}
                         {mode === "register" && "Create Account"}
                         {mode === "update-password" && "Update Password"}
                       </Button>
                     </div>
-                    <Row className="mt-3 mb-5">
-                      {mode === "login" && (
-                        <small className="col-12 col-md-6 d-flex justify-content-md-end justify-content-center">
-                          <a href="/update-password" className="ms-1">
-                            Forgot password?
-                          </a>
-                        </small>
-                      )}
-                    </Row>
                   </>
                 ) : (
                   <Row className="justify-content-center">

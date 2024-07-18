@@ -50,11 +50,11 @@ const userSchema = new mongoose.Schema(
       isPermanentResident: { type: Boolean, default: false },
       citizenshipType: {
         type: String,
-        enum: ["Green Card", "Citizen", "Work Authorization"],
+        enum: ["Green Card", "Citizen", "Work Authorization", ""],
       },
       workAuthorizationType: {
         type: String,
-        enum: ["H1-B", "L2", "F1(CPT/OPT)", "H4", "Other"],
+        enum: ["H1-B", "L2", "F1(CPT/OPT)", "H4", "Other", ""],
       },
       visaTitle: String,
       startDate: Date,

@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { useGetOnboardingQuery } from "../slices/usersApiSlice";
 import { useDispatch } from "react-redux";
 import { Form, Button, Row, Col, Container, Image } from "react-bootstrap";
 import {
   usePostOnboardingMutation,
   useUpdateInfoMutation,
+  useUploadDocsMutation,
 } from "../slices/usersApiSlice";
 import PersonalInfoField from "../components/PersonalInfoField";
 import PersonalInfoViewField from "../components/PersonalInfoViewField";
+import { useGetEmployeeFullProfileQuery } from "../slices/hrApiSlice";
 
-const PersonalInfoScreen = () => {
+const PersonalInfoScreen = (user) => {
   const { userInfo } = useSelector((state) => state.auth);
+  const { EmployeeUsername } = useParams();
   const { username, email } = userInfo;
   const { data, isLoading, error } = useGetOnboardingQuery({
-    username: username,
+    username:
+      EmployeeUsername && user && userInfo.role === "hr"
+        ? EmployeeUsername
+        : username,
   });
-  console.log(data);
   const [updateInfo] = useUpdateInfoMutation();
+  const [uploadDocs] = useUploadDocsMutation();
   const [initialFormData, setInitialFormData] = useState({
     firstName: "",
     lastName: "",
@@ -40,7 +47,6 @@ const PersonalInfoScreen = () => {
     permanentResident: false,
     citizenshipType: "",
     workAuthorization: "",
-    optReceipt: null,
     visaTitle: "",
     startDate: "",
     endDate: "",
@@ -54,8 +60,7 @@ const PersonalInfoScreen = () => {
     },
     emergencyContacts: [],
     documents: {
-      profilePicture: null,
-      driversLicense: null,
+      driverLicense: null,
       workAuthorization: null,
     },
     createdAt: null,
@@ -92,15 +97,16 @@ const PersonalInfoScreen = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const res = await updateInfo({ username, formData }).unwrap();
-    setInfo(formData);
-    setEditMode(false);
+  const removeEmergencyContact = (index) => {
+    const updatedContacts = formData.emergencyContacts.filter(
+      (_, i) => i !== index
+    );
+    setFormData({ ...formData, emergencyContacts: updatedContacts });
   };
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       const updatedData = {
         firstName: data.personalInfo.firstName,
         lastName: data.personalInfo.lastName,
@@ -125,7 +131,6 @@ const PersonalInfoScreen = () => {
         permanentResident: data.citizenshipStatus.isPermanentResident,
         citizenshipType: data.citizenshipStatus.citizenshipType,
         workAuthorization: data.citizenshipStatus.workAuthorizationType,
-        optReceipt: data.visaStatus.documents.optReceipt.file,
         visaTitle: data.citizenshipStatus.visaTitle,
         startDate: data.citizenshipStatus.startDate
           ? data.citizenshipStatus.startDate.split("T")[0]
@@ -143,8 +148,7 @@ const PersonalInfoScreen = () => {
         },
         emergencyContacts: data.emergencyContacts,
         documents: {
-          profilePicture: data.personalInfo.profilePicture,
-          driversLicense: data.documents.driverLicense,
+          driverLicense: data.documents.driverLicense,
           workAuthorization: data.documents.workAuthorization,
         },
         createdAt: data.createdAt,
@@ -166,6 +170,66 @@ const PersonalInfoScreen = () => {
     }
   };
 
+  const validateForm = () => {
+    let isValid = true;
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "ssn",
+      "dateOfBirth",
+      "gender",
+      "email",
+      "address.building",
+      "address.street",
+      "address.city",
+      "address.state",
+      "address.zip",
+      "cellPhone",
+    ];
+
+    requiredFields.forEach((field) => {
+      const fieldValue = field
+        .split(".")
+        .reduce((obj, key) => obj && obj[key], formData);
+      if (!fieldValue) {
+        isValid = false;
+      }
+    });
+
+    formData.emergencyContacts.forEach((contact, index) => {
+      if (!contact.firstName || !contact.lastName || !contact.relationship) {
+        isValid = false;
+      }
+    });
+
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      console.log("Form data submitted:", formData);
+      const data = new FormData();
+      data.append("profilePicture", formData.profilePicture);
+
+      const uploadRes = await uploadDocs(data).unwrap();
+      console.log(uploadRes);
+      const updatedForm = uploadRes.profilePicture
+        ? { ...formData, profilePicture: uploadRes.profilePicture }
+        : { ...formData };
+
+      const res = await updateInfo({
+        username,
+        formData: updatedForm,
+      }).unwrap();
+      setInfo(updatedForm);
+      setEditMode(false);
+      // 执行提交逻辑
+    } else {
+      alert("Please fill all required fields.");
+    }
+  };
+
   if (isLoading) {
     return <div>loading</div>;
   }
@@ -178,17 +242,19 @@ const PersonalInfoScreen = () => {
             handleAddressChange={handleAddressChange}
             handleEmergencyContactChange={handleEmergencyContactChange}
             addEmergencyContact={addEmergencyContact}
+            removeEmergencyContact={removeEmergencyContact}
             formData={formData}
             setFormData={setFormData}
             email={email}
+            handleCancel={handleCancel}
+            handleSubmit={handleSubmit}
           />
-          <Button onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleSubmit}>Save</Button>
         </div>
       ) : (
         <div>
           <PersonalInfoViewField data={info} />
-          <Button onClick={handleEdit}>Edit</Button>
+
+          {userInfo.role !== "hr" && <Button onClick={handleEdit}>Edit</Button>}
         </div>
       )}
     </>

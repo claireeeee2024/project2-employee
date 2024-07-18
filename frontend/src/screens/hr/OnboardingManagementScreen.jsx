@@ -30,7 +30,7 @@ const OnboardingManagementScreen = () => {
     sort: sortOption,
   });
   useEffect(() => {
-    // Fetch applications initially or on sort option change
+
     refetch();
   }, [sortOption, refetch]);
 

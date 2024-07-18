@@ -1,9 +1,7 @@
-import React from 'react';
-import { Table } from 'react-bootstrap';
+import React from "react";
+import { Table } from "react-bootstrap";
 
 export const SummaryList = ({ headers, data, handleClickName }) => {
-
-    
   return (
     <>
       <p>Total Employees Found: {data.length}</p>
@@ -20,9 +18,9 @@ export const SummaryList = ({ headers, data, handleClickName }) => {
             <tr key={item._id}>
               {headers.map((header, index) => (
                 <td key={index}>
-                    {handleClickName ? 
-                    handleClickName(header.key, item[header.key], item) : 
-                    item[header.key]}
+                  {handleClickName
+                    ? handleClickName(header.key, item[header.key], item)
+                    : item[header.key]}
                 </td>
               ))}
             </tr>

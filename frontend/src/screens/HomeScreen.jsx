@@ -12,9 +12,6 @@ const HomeScreen = () => {
     }
   }, [userInfo]);
   const navigate = useNavigate();
-  const handleClick = () => {
-    navigate("/login");
-  };
 
   if (!userInfo) {
     return <Navigate to="/login" replace />;

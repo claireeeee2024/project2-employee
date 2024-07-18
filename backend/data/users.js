@@ -113,7 +113,7 @@ const users = [
       currentDocument: "OPT Receipt",
       documents: {
         optReceipt: {
-          file: "opt_receipt_david_brown.pdf",
+          file: "files/OPT Receipt.pdf",
           status: "Pending",
         },
       },
@@ -224,12 +224,15 @@ const users = [
       startDate: new Date("2024-11-07"),
       endDate: new Date("2024-11-07"),
     },
-    onboardingStatus: "Pending",
+    onboardingStatus: "Approved",
+    documents: {
+      workAuthorization: "files/OPT Receipt.pdf",
+    },
     visaStatus: {
       currentDocument: "OPT Receipt",
       documents: {
         optReceipt: {
-          file: "opt_receipt_eva_martin.pdf",
+          file: "files/OPT Receipt.pdf",
           status: "Pending",
         },
         optEAD: {
@@ -302,12 +305,14 @@ const users = [
     },
     onboardingStatus: "Rejected",
     onboardingFeedback: "Missing something.",
+    documents: {
+      workAuthorization: "files/OPT Receipt.pdf",
+    },
     visaStatus: {
       currentDocument: "OPT Receipt",
       documents: {
         optReceipt: {
-          file: "opt_receipt_bob_williams.pdf",
-          status: "Rejected",
+          file: "files/OPT Receipt.pdf",
         },
         optEAD: {
           file: null,
@@ -378,15 +383,18 @@ const users = [
       endDate: new Date("2023-06-01"),
     },
     onboardingStatus: "Approved",
+    documents: {
+      workAuthorization: "files/OPT Receipt.pdf",
+    },
     visaStatus: {
       currentDocument: "OPT EAD",
       documents: {
         optReceipt: {
-          file: "opt_receipt_jane_smith.pdf",
+          file: "files/OPT Receipt.pdf",
           status: "Approved",
         },
         optEAD: {
-          file: "opt_ead_jane_smith.pdf",
+          file: "files/OPT EAD.pdf",
           status: "Pending",
         },
         i983: {
@@ -453,20 +461,23 @@ const users = [
       startDate: new Date("2022-07-01"),
       endDate: new Date("2025-06-30"),
     },
+    documents: {
+      workAuthorization: "files/OPT Receipt.pdf",
+    },
     onboardingStatus: "Approved",
     visaStatus: {
       currentDocument: "I-983",
       documents: {
         optReceipt: {
-          file: "opt_receipt_john_doe.pdf",
+          file: "files/OPT Receipt.pdf",
           status: "Approved",
         },
         optEAD: {
-          file: "opt_receipt_john_doe.pdf",
+          file: "files/OPT EAD.pdf",
           status: "Approved",
         },
         i983: {
-          file: "i983_john_doe.pdf",
+          file: "files/I-983.pdf",
           status: "Rejected",
           feedback: "Invalid Info",
         },
@@ -527,23 +538,26 @@ const users = [
         relationship: "Husband",
       },
     ],
+    documents: {
+      workAuthorization: "files/OPT Receipt.pdf",
+    },
     visaStatus: {
-      currentDocument: "I-983",
+      currentDocument: "I-20",
       documents: {
         optReceipt: {
-          file: "opt_receipt_linda_smith.pdf",
+          file: "files/OPT Receipt.pdf",
           status: "Approved",
         },
         optEAD: {
-          file: "opt_ead_linda_smith.pdf",
+          file: "files/OPT EAD.pdf",
           status: "Approved",
         },
         i983: {
-          file: "i983_linda_smith.pdf",
+          file: "files/I-983.pdf",
           status: "Approved",
         },
         i20: {
-          file: "i20_linda_smith.pdf",
+          file: "files/I-20.pdf",
           status: "Approved",
         },
       },

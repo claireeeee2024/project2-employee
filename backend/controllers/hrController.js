@@ -87,6 +87,51 @@ export const sendRegistrationToken = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Send notification email to employee
+// @route   POST /api/hr/send-notification
+// @access  Private/Admin
+export const sendNotificationToEmployee = asyncHandler(async (req, res) => {
+  const { employeeId: userId, nextStep: emailMessage } = req.body;
+  console.log(req.body);
+  // Find the user based on userId
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  const name = user.personalInfo.firstName + " " + user.personalInfo.lastName;
+  console.log(name, emailMessage);
+
+  // Setup Nodemailer transporter
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    port: 465,
+    secure: true,
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: "Visa Status - Next Step",
+    html: `<p>Dear ${name},</p><p>Please <strong>${emailMessage}</strong></p>`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+      res.status(500).json({ error: "Failed to send email." });
+    } else {
+      console.log("Email sent: " + info.response);
+      res.status(200).json({ message: "Notification sent successfully." });
+    }
+  });
+});
+
 // @desc    Get registration history
 // @route   GET /api/hr/registration-history
 // @access  Private/Admin
@@ -165,6 +210,7 @@ export const updateOnboardingStatusByUsername = asyncHandler(
     if (application.onboardingStatus === "Pending") {
       if (status === "Approved") {
         application.onboardingStatus = "Approved";
+        application.onboardingFeedback = "";
       } else if (status === "Rejected") {
         application.onboardingStatus = "Rejected";
         application.onboardingFeedback = feedback || "";
@@ -188,7 +234,7 @@ export const getEmployeeProfiles = asyncHandler(async (req, res) => {
   const employees = await User.find()
     .sort({ "personalInfo.lastName": 1 })
     .select(
-      "personalInfo.firstName personalInfo.lastName personalInfo.ssn citizenshipStatus.workAuthorizationType contactInfo.cellPhone email"
+      "username personalInfo.firstName personalInfo.lastName personalInfo.preferredName personalInfo.ssn citizenshipStatus.workAuthorizationType contactInfo.cellPhone email"
     );
 
   // Calculate total number of employees
@@ -196,7 +242,9 @@ export const getEmployeeProfiles = asyncHandler(async (req, res) => {
   // Format the employee data
   const formattedEmployees = employees.map((employee) => ({
     id: employee._id,
+    username: employee.username,
     name: `${employee.personalInfo.lastName}, ${employee.personalInfo.firstName}`,
+    preferredName: employee.personalInfo.preferredName,
     ssn: employee.personalInfo.ssn,
     workAuthorizationTitle:
       employee.citizenshipStatus.workAuthorizationType || "N/A",
@@ -257,7 +305,6 @@ export const updateVisaDocumentStatus = asyncHandler(async (req, res) => {
     [`visaStatus.documents.${documentType}.feedback`]: feedback,
   };
 
-
   const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, {
     new: true,
   });
@@ -273,7 +320,7 @@ export const updateVisaDocumentStatus = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 export const getAllVisaStatus = asyncHandler(async (req, res) => {
   const users = await User.find({}).select(
-    "personalInfo.firstName personalInfo.lastName citizenshipStatus visaStatus"
+    "personalInfo.firstName personalInfo.lastName personalInfo.preferredName citizenshipStatus visaStatus"
   );
   res.json(users);
 });
@@ -284,6 +331,7 @@ export const getAllVisaStatus = asyncHandler(async (req, res) => {
 export const getVisaStatusInProgress = asyncHandler(async (req, res) => {
   const users = await User.find({
     "visaStatus.currentDocument": { $ne: null },
+    "citizenshipStatus.workAuthorizationType": "F1(CPT/OPT)",
     $or: [
       { "visaStatus.documents.optReceipt.status": { $ne: "Approved" } },
       { "visaStatus.documents.optEAD.status": { $ne: "Approved" } },
@@ -312,5 +360,3 @@ export const searchEmployee = asyncHandler(async (req, res) => {
   );
   res.status(200).json(users);
 });
-
-

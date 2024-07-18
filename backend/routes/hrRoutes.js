@@ -10,6 +10,7 @@ import {
   listOnboardings,
   updateOnboardingStatusByUsername,
   getRegistrationHistory,
+  sendNotificationToEmployee,
 } from "../controllers/hrController.js";
 
 import { protect, admin } from "../middleware/authMiddleware.js";
@@ -42,13 +43,13 @@ router.get("/visa-status", protect, admin, getAllVisaStatus);
 router.get("/visa-status/in-progress", protect, admin, getVisaStatusInProgress);
 
 // @desc search employee
-// @route GET /api/users/search
+// @route GET /api/hr/search
 // @access Private/Admin
 router.get("/search", protect, admin, searchEmployee);
 
 
 
-
+router.post("/send-notification", protect, admin, sendNotificationToEmployee);
 router.post("/send-token", protect, admin, sendRegistrationToken);
 router.get("/registration-history", protect, admin, getRegistrationHistory);
 router.get("/onboardings", protect, admin, listOnboardings);

@@ -40,3 +40,13 @@ export const validateForm = (username, password, email) => {
   if (email) errors.email = validateEmail(email);
   return errors;
 };
+
+export const mapDocumentType = (frontendDocType) => {
+  const mapping = {
+    "OPT Receipt": "optReceipt",
+    "OPT EAD": "optEAD",
+    "I-983": "i983",
+    "I-20": "i20",
+  };
+  return mapping[frontendDocType] || frontendDocType;
+};

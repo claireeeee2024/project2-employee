@@ -56,10 +56,12 @@ const NameField = ({
       </Form.Group>
       <Form.Group controlId="profilePicture">
         <Form.Label>Profile Picture</Form.Label>
+        <span style={{ color: "red" }}>*</span>
         <Form.Control
           type="file"
           name="profilePicture"
           onChange={handlePictureChange}
+          required
         />
       </Form.Group>
       {imagePreview && (
@@ -228,7 +230,7 @@ const Employment = ({ handleChange, formData }) => {
         <Form.Control
           type="text"
           name="workAuthorization"
-          value={formData.workAuthorization}
+          value={formData.workAuthorization || formData.visaTitle}
           onChange={handleChange}
         />
       </Form.Group>
@@ -256,6 +258,7 @@ const Employment = ({ handleChange, formData }) => {
 const EmergencyContactsField = ({
   handleEmergencyContactChange,
   addEmergencyContact,
+  removeEmergencyContact,
   formData,
 }) => {
   return (
@@ -327,6 +330,12 @@ const EmergencyContactsField = ({
               required
             />
           </Form.Group>
+          <Button
+            variant="danger"
+            onClick={() => removeEmergencyContact(index)}
+          >
+            Remove Contact
+          </Button>
         </div>
       ))}
       <Button variant="secondary" onClick={addEmergencyContact}>
@@ -340,10 +349,12 @@ const PersonalInfoField = ({
   handleAddressChange,
   handleEmergencyContactChange,
   addEmergencyContact,
+  removeEmergencyContact,
   formData,
   setFormData,
   email,
   handleSubmit,
+  handleCancel,
 }) => {
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -368,12 +379,18 @@ const PersonalInfoField = ({
           formData={formData}
         />
         <ContactInfoField handleChange={handleChange} formData={formData} />
-        <Employment handleChange={handleChange} formData={formData} />
+        {!formData.permanentResident && (
+          <Employment handleChange={handleChange} formData={formData} />
+        )}
+
         <EmergencyContactsField
           handleEmergencyContactChange={handleEmergencyContactChange}
           addEmergencyContact={addEmergencyContact}
+          removeEmergencyContact={removeEmergencyContact}
           formData={formData}
         />
+        <Button onClick={handleCancel}>Cancel</Button>
+        <Button onClick={handleSubmit}>Save</Button>
       </Form>
     </>
   );
