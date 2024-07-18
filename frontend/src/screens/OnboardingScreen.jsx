@@ -109,6 +109,12 @@ const OnboardingScreen = () => {
       dispatch(
         setCredentials({ ...userInfo, onboardingStatus: onboardingStatus })
       );
+      if (onboardingStatus === "Not Submitted") {
+        setFormData({
+          ...formData,
+          email: data.email,
+        });
+      }
       if (onboardingStatus === "Pending" || onboardingStatus === "Rejected") {
         const tempData = {
           firstName: data.personalInfo.firstName,
