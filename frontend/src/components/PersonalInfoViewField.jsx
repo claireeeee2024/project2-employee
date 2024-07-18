@@ -8,6 +8,7 @@ const PersonalInfoViewField = ({ data }) => {
     address,
     contactInfo,
     citizenshipStatus,
+    permanentResident,
     reference,
     documents,
     visaStatus,
@@ -58,7 +59,7 @@ const PersonalInfoViewField = ({ data }) => {
           <Row>
             <Col>
               <strong>Profile Picture:</strong>{" "}
-              <a href={`${BASE_URL}${data.profilePicture}`} download>
+              <a href={`${BASE_URL}/${data.profilePicture}`} download>
                 profile picture
               </a>
             </Col>
@@ -111,28 +112,35 @@ const PersonalInfoViewField = ({ data }) => {
           <Row>
             <Col>
               <strong>Permanent Resident:</strong>{" "}
-              {data.permanentResident ? "Yes" : "No"}
+              {permanentResident ? "Yes" : "No"}
             </Col>
-            <Col>
-              <strong>Citizenship Type:</strong> {data.citizenshipType}
-            </Col>
+            {permanentResident && (
+              <Col>
+                <strong>Citizenship Type:</strong> {data.citizenshipType}
+              </Col>
+            )}
           </Row>
-          <Row>
-            <Col>
-              <strong>Visa Title:</strong> {data.visaTitle}
-            </Col>
-            <Col>
-              <strong>Work Authorization Type:</strong> {data.workAuthorization}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>Start Date:</strong> {data.startDate}
-            </Col>
-            <Col>
-              <strong>End Date:</strong> {data.endDate}
-            </Col>
-          </Row>
+          {!permanentResident && (
+            <>
+              <Row>
+                <Col>
+                  <strong>Visa Title:</strong> {data.visaTitle}
+                </Col>
+                <Col>
+                  <strong>Work Authorization Type:</strong>{" "}
+                  {data.workAuthorization}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <strong>Start Date:</strong> {data.startDate}
+                </Col>
+                <Col>
+                  <strong>End Date:</strong> {data.endDate}
+                </Col>
+              </Row>
+            </>
+          )}
         </Card.Body>
       </Card>
 
@@ -180,11 +188,11 @@ const PersonalInfoViewField = ({ data }) => {
         <Card.Body>
           <h2>Documents</h2>
           <Row>
-            {documents.driversLicense && (
+            {documents.driverLicense && (
               <>
                 <Col>
                   <strong>Driver's License:</strong>
-                  <a href={`${BASE_URL}${documents.driversLicense}`} download>
+                  <a href={`${BASE_URL}/${documents.driverLicense}`} download>
                     driver's license
                   </a>
                 </Col>
@@ -195,7 +203,7 @@ const PersonalInfoViewField = ({ data }) => {
                 <Col>
                   <strong>Work Authorization:</strong>
                   <a
-                    href={`${BASE_URL}${documents.workAuthorization}`}
+                    href={`${BASE_URL}/${documents.workAuthorization}`}
                     download
                   >
                     work authorization

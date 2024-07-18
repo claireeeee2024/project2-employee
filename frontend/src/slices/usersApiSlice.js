@@ -25,7 +25,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["User"],
     }),
-    uploadProfile: builder.mutation({
+    uploadDocs: builder.mutation({
       query: (data) => ({
         url: `${UPLOAD_URL}`,
         method: "POST",
@@ -88,7 +88,7 @@ export const {
   useLoginMutation,
   usePostOnboardingMutation,
   useGetOnboardingQuery,
-  useUploadProfileMutation,
+  useUploadDocsMutation,
   useUpdateInfoMutation,
   useLogoutMutation,
   useRegisterMutation,

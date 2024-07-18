@@ -129,10 +129,12 @@ const PictureField = ({ handlePictureChange, formData, imagePreview }) => {
       <h2>Profile Picture</h2>
       <Form.Group controlId="profilePicture">
         <Form.Label>Profile Picture</Form.Label>
+        <span style={{ color: "red" }}>*</span>
         <Form.Control
           type="file"
           name="profilePicture"
           onChange={handlePictureChange}
+          required
         />
       </Form.Group>
       {imagePreview && (
@@ -140,6 +142,31 @@ const PictureField = ({ handlePictureChange, formData, imagePreview }) => {
           {/* <Image src={imagePreview} alt="Profile Preview" fluid /> */}
           <a href={imagePreview} download>
             Download Profile Picture
+          </a>
+        </div>
+      )}
+    </>
+  );
+};
+
+const DlField = ({ handleDlChange, formData, dlPreview }) => {
+  return (
+    <>
+      <h2>Driver License</h2>
+      <Form.Group controlId="driverLicense">
+        <Form.Label>Driver License</Form.Label>
+        <span style={{ color: "red" }}>*</span>
+        <Form.Control
+          type="file"
+          name="driverLicense"
+          onChange={handleDlChange}
+          required
+        />
+      </Form.Group>
+      {dlPreview && (
+        <div>
+          <a href={dlPreview} download>
+            Download Driver License
           </a>
         </div>
       )}
@@ -221,6 +248,7 @@ const ReferenceField = ({ handleReferenceChange, formData }) => {
 const EmergencyContactsField = ({
   handleEmergencyContactChange,
   addEmergencyContact,
+  removeEmergencyContact,
   formData,
 }) => {
   return (
@@ -292,6 +320,12 @@ const EmergencyContactsField = ({
               required
             />
           </Form.Group>
+          <Button
+            variant="danger"
+            onClick={() => removeEmergencyContact(index)}
+          >
+            Remove Contact
+          </Button>
         </div>
       ))}
       <Button variant="secondary" onClick={addEmergencyContact}>
@@ -308,8 +342,7 @@ const NotSubmittedField = ({
   handleReferenceChange,
   handleEmergencyContactChange,
   addEmergencyContact,
-  //   handleFileChange,
-
+  removeEmergencyContact,
   handleSubmit,
 }) => {
   console.log(formData);
@@ -317,22 +350,37 @@ const NotSubmittedField = ({
   //   const { email } = userInfo;
   const [imagePreview, setImagePreview] = useState(null);
   const [optPreview, setOptPreview] = useState(null);
+  const [dlPreview, setDlPreview] = useState(null);
 
   const handlePictureChange = (e) => {
     const file = e.target.files[0];
-    // console.log(file);
     setFormData({ ...formData, profilePicture: file });
     setImagePreview(URL.createObjectURL(file));
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
+  const handleOptChange = (e) => {
+    const { files } = e.target;
     const file = files[0];
     setFormData({
       ...formData,
-      [name]: file,
+      documents: {
+        ...formData.documents,
+        workAuthorization: file,
+      },
     });
     setOptPreview(URL.createObjectURL(file));
+  };
+  const handleDlChange = (e) => {
+    const { files } = e.target;
+    const file = files[0];
+    setFormData({
+      ...formData,
+      documents: {
+        ...formData.documents,
+        driverLicense: file,
+      },
+    });
+    setDlPreview(URL.createObjectURL(file));
   };
 
   return (
@@ -343,6 +391,11 @@ const NotSubmittedField = ({
           handlePictureChange={handlePictureChange}
           formData={formData}
           imagePreview={imagePreview}
+        />
+        <DlField
+          handleDlChange={handleDlChange}
+          formData={formData}
+          dlPreview={dlPreview}
         />
         <AddressField
           handleAddressChange={handleAddressChange}
@@ -456,11 +509,13 @@ const NotSubmittedField = ({
         {formData.permanentResident && (
           <Form.Group controlId="citizenshipType">
             <Form.Label>Citizenship Type</Form.Label>
+            <span style={{ color: "red" }}>*</span>
             <Form.Control
               as="select"
               name="citizenshipType"
               value={formData.citizenshipType}
               onChange={handleChange}
+              required
             >
               <option value="">Select...</option>
               <option value="Green Card">Green Card</option>
@@ -471,11 +526,13 @@ const NotSubmittedField = ({
         {!formData.permanentResident && (
           <Form.Group controlId="workAuthorization">
             <Form.Label>Work Authorization</Form.Label>
+            <span style={{ color: "red" }}>*</span>
             <Form.Control
               as="select"
               name="workAuthorization"
               value={formData.workAuthorization}
               onChange={handleChange}
+              required
             >
               <option value="">Select...</option>
               <option value="H1-B">H1-B</option>
@@ -487,10 +544,12 @@ const NotSubmittedField = ({
             {formData.workAuthorization === "F1(CPT/OPT)" && (
               <Form.Group controlId="optReceipt">
                 <Form.Label>OPT Receipt</Form.Label>
+                <span style={{ color: "red" }}>*</span>
                 <Form.Control
                   type="file"
                   name="optReceipt"
-                  onChange={handleFileChange}
+                  onChange={handleOptChange}
+                  required
                 />
                 {optPreview && (
                   <a href={optPreview} download>
@@ -512,20 +571,24 @@ const NotSubmittedField = ({
             )}
             <Form.Group controlId="startDate">
               <Form.Label>Start Date</Form.Label>
+              <span style={{ color: "red" }}>*</span>
               <Form.Control
                 type="date"
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
+                required
               />
             </Form.Group>
             <Form.Group controlId="endDate">
               <Form.Label>End Date</Form.Label>
+              <span style={{ color: "red" }}>*</span>
               <Form.Control
                 type="date"
                 name="endDate"
                 value={formData.endDate}
                 onChange={handleChange}
+                required
               />
             </Form.Group>
           </Form.Group>
@@ -537,14 +600,9 @@ const NotSubmittedField = ({
         <EmergencyContactsField
           handleEmergencyContactChange={handleEmergencyContactChange}
           addEmergencyContact={addEmergencyContact}
+          removeEmergencyContact={removeEmergencyContact}
           formData={formData}
         />
-        {/* <h2>Summary of Uploaded Files</h2>
-        <ul>
-          {formData.documents.profilePicture && <li>Profile Picture</li>}
-          {formData.documents.driversLicense && <li>Driver’s License</li>}
-          {formData.documents.workAuthorization && <li>Work Authorization</li>}
-        </ul> */}
         <div>
           <Button type="submit">Submit</Button>
         </div>

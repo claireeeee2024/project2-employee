@@ -11,13 +11,11 @@ const PendingField = ({ data }) => {
     reference,
     documents,
     visaStatus,
-    registrationToken,
+    workAuthorization,
     username,
     email,
     role,
     emergencyContacts,
-    onboardingStatus,
-    onboardingFeedback,
     createdAt,
     updatedAt,
   } = data;
@@ -49,7 +47,8 @@ const PendingField = ({ data }) => {
               <strong>SSN:</strong> {personalInfo.ssn}
             </Col>
             <Col>
-              <strong>Date of Birth:</strong> {personalInfo.dateOfBirth}
+              <strong>Date of Birth:</strong>{" "}
+              {personalInfo.dateOfBirth.split("T")[0]}
             </Col>
           </Row>
           <Row>
@@ -60,7 +59,7 @@ const PendingField = ({ data }) => {
           <Row>
             <Col>
               <strong>Profile Picture:</strong>{" "}
-              <a href={`${BASE_URL}${personalInfo.profilePicture}`} download>
+              <a href={`${BASE_URL}/${personalInfo.profilePicture}`} download>
                 profile picture
               </a>
             </Col>
@@ -115,28 +114,39 @@ const PendingField = ({ data }) => {
               <strong>Permanent Resident:</strong>{" "}
               {citizenshipStatus.isPermanentResident ? "Yes" : "No"}
             </Col>
-            <Col>
-              <strong>Citizenship Type:</strong>{" "}
-              {citizenshipStatus.citizenshipType}
-            </Col>
+            {citizenshipStatus.isPermanentResident && (
+              <Col>
+                <strong>Citizenship Type:</strong>{" "}
+                {citizenshipStatus.citizenshipType}
+              </Col>
+            )}
           </Row>
           <Row>
-            <Col>
-              <strong>Visa Title:</strong> {citizenshipStatus.visaTitle}
-            </Col>
-            <Col>
-              <strong>Work Authorization Type:</strong>{" "}
-              {citizenshipStatus.workAuthorizationType}
-            </Col>
+            {!citizenshipStatus.isPermanentResident &&
+              citizenshipStatus.visaTitle && (
+                <Col>
+                  <strong>Visa Title:</strong> {citizenshipStatus.visaTitle}
+                </Col>
+              )}
+            {!citizenshipStatus.isPermanentResident && (
+              <Col>
+                <strong>Work Authorization Type:</strong>{" "}
+                {citizenshipStatus.workAuthorizationType}
+              </Col>
+            )}
           </Row>
-          <Row>
-            <Col>
-              <strong>Start Date:</strong> {citizenshipStatus.startDate}
-            </Col>
-            <Col>
-              <strong>End Date:</strong> {citizenshipStatus.endDate}
-            </Col>
-          </Row>
+          {!citizenshipStatus.isPermanentResident && (
+            <Row>
+              <Col>
+                <strong>Start Date:</strong>{" "}
+                {citizenshipStatus.startDate.split("T")[0]}
+              </Col>
+              <Col>
+                <strong>End Date:</strong>{" "}
+                {citizenshipStatus.endDate.split("T")[0]}
+              </Col>
+            </Row>
+          )}
         </Card.Body>
       </Card>
 
@@ -175,76 +185,94 @@ const PendingField = ({ data }) => {
           <h2>Documents</h2>
           <Row>
             <Col>
-              <strong>Driver's License:</strong> {documents.driverLicense}
-            </Col>
-            <Col>
-              <strong>Work Authorization:</strong> {documents.workAuthorization}
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-3">
-        <Card.Body>
-          <h2>Visa Status</h2>
-          <Row>
-            <Col>
-              <strong>Current Document:</strong> {visaStatus.currentDocument}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>OPT Receipt:</strong>{" "}
-              <a
-                href={`${BASE_URL}${visaStatus.documents.optReceipt.file}`}
-                download
-              >
-                opt receipt
+              <strong>Driver's License: </strong>
+              <a href={`${BASE_URL}/${documents.driverLicense}`} download>
+                driver license
               </a>
             </Col>
-            <Col>
-              <strong>Status:</strong> {visaStatus.documents.optReceipt.status}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong>{" "}
-              {visaStatus.documents.optReceipt.feedback}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>OPT EAD:</strong> {visaStatus.documents.optEAD.file}
-            </Col>
-            <Col>
-              <strong>Status:</strong> {visaStatus.documents.optEAD.status}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong> {visaStatus.documents.optEAD.feedback}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>I-983:</strong> {visaStatus.documents.i983.file}
-            </Col>
-            <Col>
-              <strong>Status:</strong> {visaStatus.documents.i983.status}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong> {visaStatus.documents.i983.feedback}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <strong>I-20:</strong> {visaStatus.documents.i20.file}
-            </Col>
-            <Col>
-              <strong>Status:</strong> {visaStatus.documents.i20.status}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong> {visaStatus.documents.i20.feedback}
-            </Col>
+            {!citizenshipStatus.isPermanentResident &&
+              citizenshipStatus.workAuthorizationType === "F1(CPT/OPT)" && (
+                <Col>
+                  <strong>Work Authorization: </strong>
+                  <a
+                    href={`${BASE_URL}/${documents.workAuthorization}`}
+                    download
+                  >
+                    work authorization
+                  </a>
+                </Col>
+              )}
           </Row>
         </Card.Body>
       </Card>
+      {!citizenshipStatus.isPermanentResident &&
+        citizenshipStatus.workAuthorizationType === "F1(CPT/OPT)" && (
+          <Card className="mb-3">
+            <Card.Body>
+              <h2>Visa Status</h2>
+              <Row>
+                <Col>
+                  <strong>Current Document:</strong>{" "}
+                  {visaStatus.currentDocument}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <strong>OPT Receipt:</strong>{" "}
+                  <a
+                    href={`${BASE_URL}/${visaStatus.documents.optReceipt.file}`}
+                    download
+                  >
+                    opt receipt
+                  </a>
+                </Col>
+                <Col>
+                  <strong>Status:</strong>{" "}
+                  {visaStatus.documents.optReceipt.status}
+                </Col>
+                <Col>
+                  <strong>Feedback:</strong>{" "}
+                  {visaStatus.documents.optReceipt.feedback}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <strong>OPT EAD:</strong> {visaStatus.documents.optEAD.file}
+                </Col>
+                <Col>
+                  <strong>Status:</strong> {visaStatus.documents.optEAD.status}
+                </Col>
+                <Col>
+                  <strong>Feedback:</strong>{" "}
+                  {visaStatus.documents.optEAD.feedback}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <strong>I-983:</strong> {visaStatus.documents.i983.file}
+                </Col>
+                <Col>
+                  <strong>Status:</strong> {visaStatus.documents.i983.status}
+                </Col>
+                <Col>
+                  <strong>Feedback:</strong>{" "}
+                  {visaStatus.documents.i983.feedback}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <strong>I-20:</strong> {visaStatus.documents.i20.file}
+                </Col>
+                <Col>
+                  <strong>Status:</strong> {visaStatus.documents.i20.status}
+                </Col>
+                <Col>
+                  <strong>Feedback:</strong> {visaStatus.documents.i20.feedback}
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        )}
 
       <Card className="mb-3">
         <Card.Body>
@@ -298,20 +326,6 @@ const PendingField = ({ data }) => {
             </Col>
             <Col>
               <strong>Role:</strong> {role}
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-3">
-        <Card.Body>
-          <h2>Onboarding Status</h2>
-          <Row>
-            <Col>
-              <strong>Status:</strong> {onboardingStatus}
-            </Col>
-            <Col>
-              <strong>Feedback:</strong> {onboardingFeedback}
             </Col>
           </Row>
         </Card.Body>
