@@ -193,10 +193,11 @@ export const postOnboarding = asyncHandler(async (req, res) => {
         "reference.email": formData.reference.email,
         "reference.relationship": formData.reference.relationship,
         emergencyContacts: formData.emergencyContacts,
-        "documents.profilePicture": formData.documents.profilePicture,
-        "documents.driversLicense": formData.documents.driversLicense,
+        "documents.driverLicense": formData.documents.driverLicense,
         "documents.workAuthorization": formData.documents.workAuthorization,
-        "visaStatus.documents.optReceipt.file": formData.optReceipt,
+        "visaStatus.currentDocument": "optReceipt",
+        "visaStatus.documents.optReceipt.file":
+          formData.documents.workAuthorization,
         // 更新其它visaStatus文档
       },
     },
@@ -232,7 +233,7 @@ export const postOnboarding = asyncHandler(async (req, res) => {
 // @access  Public
 export const updateInfo = asyncHandler(async (req, res) => {
   const { username, formData } = req.body;
-
+  console.log(formData);
   const user = await User.findOneAndUpdate(
     { username },
     {
@@ -265,8 +266,7 @@ export const updateInfo = asyncHandler(async (req, res) => {
         "reference.email": formData.reference.email,
         "reference.relationship": formData.reference.relationship,
         emergencyContacts: formData.emergencyContacts,
-        "documents.profilePicture": formData.documents.profilePicture,
-        "documents.driversLicense": formData.documents.driversLicense,
+        "documents.driverLicense": formData.documents.driverLicense,
         "documents.workAuthorization": formData.documents.workAuthorization,
         "visaStatus.documents.optReceipt.file": formData.optReceipt,
         // 更新其它visaStatus文档

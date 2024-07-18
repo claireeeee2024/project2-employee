@@ -6,7 +6,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "files"); 
+    cb(null, "files");
   },
   filename(req, file, cb) {
     cb(
@@ -36,7 +36,6 @@ function fileFilter(req, file, cb) {
 const upload = multer({ storage });
 const uploadSingle = upload.single("file");
 
-
 router.post("/single", (req, res) => {
   uploadSingle(req, res, (err) => {
     if (err) {
@@ -44,19 +43,18 @@ router.post("/single", (req, res) => {
       res.status(400).json({ message: err.message });
     } else {
       console.log(req.file);
-      console.log({file: `files/${req.file.filename}`})
+      console.log({ file: `files/${req.file.filename}` });
       res.json({ file: `files/${req.file.filename}` });
     }
   });
 });
-
-
 
 router.post(
   "/",
   upload.fields([
     { name: "profilePicture", maxCount: 1 },
     { name: "optReceipt", maxCount: 1 },
+    { name: "driverLicense", maxCount: 1 },
   ]),
   (req, res) => {
     console.log("start uploading");
@@ -64,15 +62,16 @@ router.post(
     console.log(files);
     res.json({
       profilePicture: files.profilePicture
-        ? `/files/${files.profilePicture[0].filename}`
+        ? `files/${files.profilePicture[0].filename}`
         : null,
       optReceipt: files.optReceipt
-        ? `/files/${files.optReceipt[0].filename}`
+        ? `files/${files.optReceipt[0].filename}`
+        : null,
+      driverLicense: files.driverLicense
+        ? `files/${files.driverLicense[0].filename}`
         : null,
     });
-
   }
 );
-
 
 export default router;

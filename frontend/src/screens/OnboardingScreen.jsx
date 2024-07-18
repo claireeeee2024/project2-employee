@@ -11,13 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../slices/authSlice";
 import PendingField from "../components/PendingField";
 import NotSubmittedField from "../components/NotSubmittedField";
-import { useUploadProfileMutation } from "../slices/usersApiSlice";
-import axios from "axios";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useUploadDocsMutation } from "../slices/usersApiSlice";
+import { useParams, useNavigate } from "react-router-dom";
 
 const OnboardingScreen = () => {
   const [postOnboarding] = usePostOnboardingMutation();
-  const [uploadProfile] = useUploadProfileMutation();
+  const [uploadDocs] = useUploadDocsMutation();
   const { userInfo } = useSelector((state) => state.auth);
   const username = useParams().username || userInfo.username;
 
@@ -85,7 +84,6 @@ const OnboardingScreen = () => {
     permanentResident: false,
     citizenshipType: "",
     workAuthorization: "",
-    optReceipt: null,
     visaTitle: "",
     startDate: "",
     endDate: "",
@@ -99,12 +97,10 @@ const OnboardingScreen = () => {
     },
     emergencyContacts: [],
     documents: {
-      profilePicture: null,
-      driversLicense: null,
-      workAuthorization: null,
+      driverLicense: null,
+      optReceipt: null,
     },
   });
-  const [profilePicture, setProfilePicture] = useState(null);
 
   useEffect(() => {
     if (data) {
@@ -114,7 +110,7 @@ const OnboardingScreen = () => {
         setCredentials({ ...userInfo, onboardingStatus: onboardingStatus })
       );
       if (onboardingStatus === "Pending" || onboardingStatus === "Rejected") {
-        setFormData({
+        const tempData = {
           firstName: data.personalInfo.firstName,
           lastName: data.personalInfo.lastName,
           middleName: data.personalInfo.middleName,
@@ -138,7 +134,6 @@ const OnboardingScreen = () => {
           permanentResident: data.citizenshipStatus.isPermanentResident,
           citizenshipType: data.citizenshipStatus.citizenshipType,
           workAuthorization: data.citizenshipStatus.workAuthorizationType,
-          optReceipt: data.optReceipt,
           visaTitle: data.citizenshipStatus.visaTitle,
           startDate: data.citizenshipStatus.startDate
             ? data.citizenshipStatus.startDate.split("T")[0]
@@ -156,11 +151,12 @@ const OnboardingScreen = () => {
           },
           emergencyContacts: data.emergencyContacts,
           documents: {
-            profilePicture: data.personalInfo.profilePicture,
-            driversLicense: data.documents.driverLicense,
-            workAuthorization: data.documents.workAuthorization,
+            driverLicense: data.documents.driverLicense,
+            optReceipt: data.documents.workAuthorization,
           },
-        });
+        };
+        console.log(tempData);
+        setFormData(tempData);
       }
       if (userInfo.role === "employee" && onboardingStatus === "Approved") {
         navigate("/");
@@ -203,25 +199,33 @@ const OnboardingScreen = () => {
     });
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFormData({
-      ...formData,
-      documents: { ...formData.documents, [name]: files[0] },
-    });
+  const removeEmergencyContact = (index) => {
+    const updatedContacts = formData.emergencyContacts.filter(
+      (_, i) => i !== index
+    );
+    setFormData({ ...formData, emergencyContacts: updatedContacts });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.emergencyContacts.length < 1) {
+      alert("Please input at least one contact");
+      return;
+    }
     const data = new FormData();
     data.append("profilePicture", formData.profilePicture);
-    data.append("optReceipt", formData.optReceipt);
-    const uploadRes = await uploadProfile(data).unwrap();
+    data.append("optReceipt", formData.documents.workAuthorization);
+    data.append("driverLicense", formData.documents.driverLicense);
+    const uploadRes = await uploadDocs(data).unwrap();
     console.log(uploadRes);
     const updatedForm = {
       ...formData,
       profilePicture: uploadRes.profilePicture,
-      optReceipt: uploadRes.optReceipt,
+      documents: {
+        ...formData.documents,
+        workAuthorization: uploadRes.optReceipt,
+        driverLicense: uploadRes.driverLicense,
+      },
     };
     console.log(updatedForm);
 
@@ -230,8 +234,10 @@ const OnboardingScreen = () => {
       formData: updatedForm,
     }).unwrap();
     dispatch(setCredentials({ ...res }));
-    setFormData(updatedForm);
     // handle form submission
+    setFormData(updatedForm);
+    refetch();
+    navigate("/onboarding");
   };
 
   if (isLoading) {
@@ -291,7 +297,7 @@ const OnboardingScreen = () => {
         handleReferenceChange={handleReferenceChange}
         handleEmergencyContactChange={handleEmergencyContactChange}
         addEmergencyContact={addEmergencyContact}
-        handleFileChange={handleFileChange}
+        removeEmergencyContact={removeEmergencyContact}
         handleSubmit={handleSubmit}
       />
     ) : onboardingStatus === "Pending" ? (
@@ -310,7 +316,7 @@ const OnboardingScreen = () => {
           handleReferenceChange={handleReferenceChange}
           handleEmergencyContactChange={handleEmergencyContactChange}
           addEmergencyContact={addEmergencyContact}
-          handleFileChange={handleFileChange}
+          removeEmergencyContact={removeEmergencyContact}
           handleSubmit={handleSubmit}
         />
       </Container>
